@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 7e37030dab05c9a439fb09ae276f66ab
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8994010686287986288
+    second: SpritesheetMiniMago_0
+  - first:
+      213: 8898136852160519649
+    second: SpritesheetMiniMago_1
+  - first:
+      213: 486397563516754110
+    second: SpritesheetMiniMago_2
+  - first:
+      213: 9192600531252844447
+    second: SpritesheetMiniMago_3
+  - first:
+      213: 3651416225694231045
+    second: SpritesheetMiniMago_4
+  - first:
+      213: -8137344545533796425
+    second: SpritesheetMiniMago_5
+  - first:
+      213: -2026751385726403994
+    second: SpritesheetMiniMago_6
+  - first:
+      213: 7884186934218574090
+    second: SpritesheetMiniMago_7
+  - first:
+      213: 6329150912102302541
+    second: SpritesheetMiniMago_8
+  - first:
+      213: 4133363126693723608
+    second: SpritesheetMiniMago_9
+  - first:
+      213: -1753197214150711311
+    second: SpritesheetMiniMago_10
+  - first:
+      213: 9178765511182515608
+    second: SpritesheetMiniMago_11
+  - first:
+      213: -940446834618874431
+    second: SpritesheetMiniMago_12
+  - first:
+      213: -3248271189437949268
+    second: SpritesheetMiniMago_13
+  - first:
+      213: 8401804509655794950
+    second: SpritesheetMiniMago_14
+  - first:
+      213: 2742399994842172297
+    second: SpritesheetMiniMago_15
+  - first:
+      213: 1924438719922899534
+    second: SpritesheetMiniMago_16
+  - first:
+      213: -8789480482861996311
+    second: SpritesheetMiniMago_17
+  - first:
+      213: 6496566462852923393
+    second: SpritesheetMiniMago_18
+  - first:
+      213: 6724174446038472681
+    second: SpritesheetMiniMago_19
+  - first:
+      213: -3818090248713580172
+    second: SpritesheetMiniMago_20
+  - first:
+      213: 42235956662033385
+    second: SpritesheetMiniMago_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 387
+        width: 81
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 091ccb1eeeade2380800000000000000
+      internalID: -8994010686287986288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_1
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 387
+        width: 82
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ed17db92588c7b70800000000000000
+      internalID: 8898136852160519649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_2
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 387
+        width: 82
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb81809c10800c600800000000000000
+      internalID: 486397563516754110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_3
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 387
+        width: 83
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f97946b8a7da29f70800000000000000
+      internalID: 9192600531252844447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_4
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 387
+        width: 81
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50a2a9316bf6ca230800000000000000
+      internalID: 3651416225694231045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_5
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 275
+        width: 81
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bfde74df38521f80800000000000000
+      internalID: -8137344545533796425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_6
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 275
+        width: 80
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66a3fb55a588fd3e0800000000000000
+      internalID: -2026751385726403994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_7
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 275
+        width: 80
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a09cfd49e324a6d60800000000000000
+      internalID: 7884186934218574090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_8
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 275
+        width: 81
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4382b5a839a5d750800000000000000
+      internalID: 6329150912102302541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_9
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 275
+        width: 81
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ddf64e3dd7ac5930800000000000000
+      internalID: 4133363126693723608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_10
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 176
+        width: 78
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f7a75d2c646ba7e0800000000000000
+      internalID: -1753197214150711311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_11
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 176
+        width: 77
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89df3aae996816f70800000000000000
+      internalID: 9178765511182515608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_12
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 176
+        width: 77
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c5c66c269cd2f2f0800000000000000
+      internalID: -940446834618874431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_13
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 176
+        width: 77
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: caa5a633092dbe2d0800000000000000
+      internalID: -3248271189437949268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_14
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 176
+        width: 77
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6050f46dfa4399470800000000000000
+      internalID: 8401804509655794950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_15
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 88
+        width: 68
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98bc994f346fe0620800000000000000
+      internalID: 2742399994842172297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_16
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 86
+        width: 68
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4a0305d1daf4ba10800000000000000
+      internalID: 1924438719922899534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_17
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 86
+        width: 68
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e628cac11e750680800000000000000
+      internalID: -8789480482861996311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_18
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 87
+        width: 68
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 100801617c0782a50800000000000000
+      internalID: 6496566462852923393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_19
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 86
+        width: 67
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e7d1ef4801115d50800000000000000
+      internalID: 6724174446038472681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_20
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 3
+        width: 78
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4715b0dd52b630bc0800000000000000
+      internalID: -3818090248713580172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniMago_21
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 3
+        width: 72
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ebd699f06d069000800000000000000
+      internalID: 42235956662033385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritesheetMiniMago_0: -8994010686287986288
+      SpritesheetMiniMago_1: 8898136852160519649
+      SpritesheetMiniMago_10: -1753197214150711311
+      SpritesheetMiniMago_11: 9178765511182515608
+      SpritesheetMiniMago_12: -940446834618874431
+      SpritesheetMiniMago_13: -3248271189437949268
+      SpritesheetMiniMago_14: 8401804509655794950
+      SpritesheetMiniMago_15: 2742399994842172297
+      SpritesheetMiniMago_16: 1924438719922899534
+      SpritesheetMiniMago_17: -8789480482861996311
+      SpritesheetMiniMago_18: 6496566462852923393
+      SpritesheetMiniMago_19: 6724174446038472681
+      SpritesheetMiniMago_2: 486397563516754110
+      SpritesheetMiniMago_20: -3818090248713580172
+      SpritesheetMiniMago_21: 42235956662033385
+      SpritesheetMiniMago_3: 9192600531252844447
+      SpritesheetMiniMago_4: 3651416225694231045
+      SpritesheetMiniMago_5: -8137344545533796425
+      SpritesheetMiniMago_6: -2026751385726403994
+      SpritesheetMiniMago_7: 7884186934218574090
+      SpritesheetMiniMago_8: 6329150912102302541
+      SpritesheetMiniMago_9: 4133363126693723608
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
