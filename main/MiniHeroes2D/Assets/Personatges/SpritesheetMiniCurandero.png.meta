@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 90b5c5f684953394187a101b2e049b89
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3880090826481875346
+    second: SpritesheetMiniCurandero_0
+  - first:
+      213: -85376081941936252
+    second: SpritesheetMiniCurandero_1
+  - first:
+      213: 8502682037030299453
+    second: SpritesheetMiniCurandero_2
+  - first:
+      213: -7461515961215251351
+    second: SpritesheetMiniCurandero_3
+  - first:
+      213: 4387074732544456394
+    second: SpritesheetMiniCurandero_4
+  - first:
+      213: -1942784508026463131
+    second: SpritesheetMiniCurandero_5
+  - first:
+      213: 4630730660821585561
+    second: SpritesheetMiniCurandero_6
+  - first:
+      213: 3922158490956944995
+    second: SpritesheetMiniCurandero_7
+  - first:
+      213: -2903711513612148150
+    second: SpritesheetMiniCurandero_8
+  - first:
+      213: -4178789446377072952
+    second: SpritesheetMiniCurandero_9
+  - first:
+      213: -6800350981330499281
+    second: SpritesheetMiniCurandero_10
+  - first:
+      213: -5049148328091373065
+    second: SpritesheetMiniCurandero_11
+  - first:
+      213: 741419734611959534
+    second: SpritesheetMiniCurandero_12
+  - first:
+      213: -8002143157835358325
+    second: SpritesheetMiniCurandero_13
+  - first:
+      213: -9083972284644735420
+    second: SpritesheetMiniCurandero_14
+  - first:
+      213: -1677244405269327671
+    second: SpritesheetMiniCurandero_15
+  - first:
+      213: 3334604778899049217
+    second: SpritesheetMiniCurandero_16
+  - first:
+      213: -789782709729638340
+    second: SpritesheetMiniCurandero_17
+  - first:
+      213: -7938810360039937959
+    second: SpritesheetMiniCurandero_18
+  - first:
+      213: -5663839936253519058
+    second: SpritesheetMiniCurandero_19
+  - first:
+      213: -2552063559501590824
+    second: SpritesheetMiniCurandero_20
+  - first:
+      213: 702517916626455047
+    second: SpritesheetMiniCurandero_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 387
+        width: 74
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29934b09c0ad8d530800000000000000
+      internalID: 3880090826481875346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_1
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 387
+        width: 63
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4874983e7eea0def0800000000000000
+      internalID: -85376081941936252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_2
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 387
+        width: 64
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d37294773489ff570800000000000000
+      internalID: 8502682037030299453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_3
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 387
+        width: 75
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96c8bdd14ce537890800000000000000
+      internalID: -7461515961215251351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_4
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 387
+        width: 74
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac6776cb93502ec30800000000000000
+      internalID: 4387074732544456394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_5
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 275
+        width: 64
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56c53f388c7d905e0800000000000000
+      internalID: -1942784508026463131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_6
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 275
+        width: 73
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99ec7c85009a34040800000000000000
+      internalID: 4630730660821585561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_7
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 275
+        width: 63
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3665546fd5e4e6630800000000000000
+      internalID: 3922158490956944995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_8
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 275
+        width: 63
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a42afec43c1f3b7d0800000000000000
+      internalID: -2903711513612148150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_9
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 275
+        width: 75
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c61b818325f106c0800000000000000
+      internalID: -4178789446377072952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_10
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 176
+        width: 69
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2901d1ffcc40a1a0800000000000000
+      internalID: -6800350981330499281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_11
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 178
+        width: 58
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f13bddd852dde9b0800000000000000
+      internalID: -5049148328091373065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_12
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 178
+        width: 70
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eee9207025d0a4a00800000000000000
+      internalID: 741419734611959534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_13
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 177
+        width: 59
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f9663f13da2f090800000000000000
+      internalID: -8002143157835358325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_14
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 178
+        width: 70
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 446c148065f3fe180800000000000000
+      internalID: -9083972284644735420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_15
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 88
+        width: 70
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c0196e891b39b8e0800000000000000
+      internalID: -1677244405269327671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_16
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 87
+        width: 70
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10b09900165e64e20800000000000000
+      internalID: 3334604778899049217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_17
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 87
+        width: 70
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c38c1d85fc02a05f0800000000000000
+      internalID: -789782709729638340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_18
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 88
+        width: 70
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 958e0a60a0ea3d190800000000000000
+      internalID: -7938810360039937959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_19
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 87
+        width: 70
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2b10f6169ff561b0800000000000000
+      internalID: -5663839936253519058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_20
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 3
+        width: 76
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de40bbc6bf359cd0800000000000000
+      internalID: -2552063559501590824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniCurandero_21
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 0
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70a0ed4b258dfb900800000000000000
+      internalID: 702517916626455047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritesheetMiniCurandero_0: 3880090826481875346
+      SpritesheetMiniCurandero_1: -85376081941936252
+      SpritesheetMiniCurandero_10: -6800350981330499281
+      SpritesheetMiniCurandero_11: -5049148328091373065
+      SpritesheetMiniCurandero_12: 741419734611959534
+      SpritesheetMiniCurandero_13: -8002143157835358325
+      SpritesheetMiniCurandero_14: -9083972284644735420
+      SpritesheetMiniCurandero_15: -1677244405269327671
+      SpritesheetMiniCurandero_16: 3334604778899049217
+      SpritesheetMiniCurandero_17: -789782709729638340
+      SpritesheetMiniCurandero_18: -7938810360039937959
+      SpritesheetMiniCurandero_19: -5663839936253519058
+      SpritesheetMiniCurandero_2: 8502682037030299453
+      SpritesheetMiniCurandero_20: -2552063559501590824
+      SpritesheetMiniCurandero_21: 702517916626455047
+      SpritesheetMiniCurandero_3: -7461515961215251351
+      SpritesheetMiniCurandero_4: 4387074732544456394
+      SpritesheetMiniCurandero_5: -1942784508026463131
+      SpritesheetMiniCurandero_6: 4630730660821585561
+      SpritesheetMiniCurandero_7: 3922158490956944995
+      SpritesheetMiniCurandero_8: -2903711513612148150
+      SpritesheetMiniCurandero_9: -4178789446377072952
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

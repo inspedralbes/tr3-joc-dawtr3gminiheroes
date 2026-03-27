@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 7d40f947679931840883427dbf8547a9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2462859191779907193
+    second: SpritesheetMiniDemonio_0
+  - first:
+      213: -4939121364845934241
+    second: SpritesheetMiniDemonio_1
+  - first:
+      213: 8098923983993818799
+    second: SpritesheetMiniDemonio_2
+  - first:
+      213: -6428966262015790138
+    second: SpritesheetMiniDemonio_3
+  - first:
+      213: -7367458364861028670
+    second: SpritesheetMiniDemonio_4
+  - first:
+      213: -5751970603019011546
+    second: SpritesheetMiniDemonio_5
+  - first:
+      213: -692145021775845917
+    second: SpritesheetMiniDemonio_6
+  - first:
+      213: -8679428949627469327
+    second: SpritesheetMiniDemonio_7
+  - first:
+      213: -1302829684355243355
+    second: SpritesheetMiniDemonio_8
+  - first:
+      213: 4747792033573043425
+    second: SpritesheetMiniDemonio_9
+  - first:
+      213: 7812336911849710388
+    second: SpritesheetMiniDemonio_10
+  - first:
+      213: -8566164533122152356
+    second: SpritesheetMiniDemonio_11
+  - first:
+      213: 9102147532630129243
+    second: SpritesheetMiniDemonio_12
+  - first:
+      213: 1423836026668732620
+    second: SpritesheetMiniDemonio_13
+  - first:
+      213: 1505206536063126194
+    second: SpritesheetMiniDemonio_14
+  - first:
+      213: 4681859502532502313
+    second: SpritesheetMiniDemonio_15
+  - first:
+      213: 1167976034319698087
+    second: SpritesheetMiniDemonio_16
+  - first:
+      213: -6615280378546249766
+    second: SpritesheetMiniDemonio_17
+  - first:
+      213: -431418653568570753
+    second: SpritesheetMiniDemonio_18
+  - first:
+      213: 6580586076877562434
+    second: SpritesheetMiniDemonio_19
+  - first:
+      213: -6120301971155491912
+    second: SpritesheetMiniDemonio_20
+  - first:
+      213: -7175828711197490769
+    second: SpritesheetMiniDemonio_21
+  - first:
+      213: 2068373506343632294
+    second: SpritesheetMiniDemonio_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 387
+        width: 86
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78927262d9a22ddd0800000000000000
+      internalID: -2462859191779907193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_1
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 387
+        width: 85
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f59c0d98947b47bb0800000000000000
+      internalID: -4939121364845934241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_2
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 387
+        width: 86
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faec7d81478256070800000000000000
+      internalID: 8098923983993818799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_3
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 387
+        width: 85
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c3f39f2f39b7c6a0800000000000000
+      internalID: -6428966262015790138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_4
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 387
+        width: 84
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c66af0d6a781c990800000000000000
+      internalID: -7367458364861028670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_5
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 275
+        width: 85
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62aff883635ec20b0800000000000000
+      internalID: -5751970603019011546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_6
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 275
+        width: 84
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e5eef315c10566f0800000000000000
+      internalID: -692145021775845917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_7
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 275
+        width: 84
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f1863c1b597c8780800000000000000
+      internalID: -8679428949627469327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_8
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 275
+        width: 85
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a2eb250e4b6bede0800000000000000
+      internalID: -1302829684355243355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_9
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 275
+        width: 86
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ecfc8c13bb83e140800000000000000
+      internalID: 4747792033573043425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_10
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 176
+        width: 83
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4336970a70ffa6c60800000000000000
+      internalID: 7812336911849710388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_11
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 177
+        width: 83
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5844bb1ebede1980800000000000000
+      internalID: -8566164533122152356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_12
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 177
+        width: 83
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5afd97a4f2515e70800000000000000
+      internalID: 9102147532630129243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_13
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 177
+        width: 83
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc05efb825b72c310800000000000000
+      internalID: 1423836026668732620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_14
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 177
+        width: 83
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ba83af9e5193e410800000000000000
+      internalID: 1505206536063126194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_15
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 88
+        width: 65
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 923acb8796e49f040800000000000000
+      internalID: 4681859502532502313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_16
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 86
+        width: 64
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a88bc7d30c753010800000000000000
+      internalID: 1167976034319698087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_17
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 86
+        width: 64
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adf93238b8dc134a0800000000000000
+      internalID: -6615280378546249766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_18
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 88
+        width: 64
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7a6194350b430af0800000000000000
+      internalID: -431418653568570753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_19
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 86
+        width: 64
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2422b26eb20f25b50800000000000000
+      internalID: 6580586076877562434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_20
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 0
+        width: 67
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b36723b8c1501ba0800000000000000
+      internalID: -6120301971155491912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_21
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 3
+        width: 77
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa1460c6ec55a6c90800000000000000
+      internalID: -7175828711197490769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniDemonio_22
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 40
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6adf07cceb654bc10800000000000000
+      internalID: 2068373506343632294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritesheetMiniDemonio_0: -2462859191779907193
+      SpritesheetMiniDemonio_1: -4939121364845934241
+      SpritesheetMiniDemonio_10: 7812336911849710388
+      SpritesheetMiniDemonio_11: -8566164533122152356
+      SpritesheetMiniDemonio_12: 9102147532630129243
+      SpritesheetMiniDemonio_13: 1423836026668732620
+      SpritesheetMiniDemonio_14: 1505206536063126194
+      SpritesheetMiniDemonio_15: 4681859502532502313
+      SpritesheetMiniDemonio_16: 1167976034319698087
+      SpritesheetMiniDemonio_17: -6615280378546249766
+      SpritesheetMiniDemonio_18: -431418653568570753
+      SpritesheetMiniDemonio_19: 6580586076877562434
+      SpritesheetMiniDemonio_2: 8098923983993818799
+      SpritesheetMiniDemonio_20: -6120301971155491912
+      SpritesheetMiniDemonio_21: -7175828711197490769
+      SpritesheetMiniDemonio_22: 2068373506343632294
+      SpritesheetMiniDemonio_3: -6428966262015790138
+      SpritesheetMiniDemonio_4: -7367458364861028670
+      SpritesheetMiniDemonio_5: -5751970603019011546
+      SpritesheetMiniDemonio_6: -692145021775845917
+      SpritesheetMiniDemonio_7: -8679428949627469327
+      SpritesheetMiniDemonio_8: -1302829684355243355
+      SpritesheetMiniDemonio_9: 4747792033573043425
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

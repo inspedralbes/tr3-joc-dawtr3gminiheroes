@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: fba6b408ad5541f4a937fa22104df3d5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8782200614554983921
+    second: SpritesheetMiniAngel_0
+  - first:
+      213: -4339881780795261829
+    second: SpritesheetMiniAngel_1
+  - first:
+      213: 7585116586532841425
+    second: SpritesheetMiniAngel_2
+  - first:
+      213: 1592094516823335312
+    second: SpritesheetMiniAngel_3
+  - first:
+      213: 2646187314582460048
+    second: SpritesheetMiniAngel_4
+  - first:
+      213: -9114005035222073323
+    second: SpritesheetMiniAngel_5
+  - first:
+      213: -8250166470513990260
+    second: SpritesheetMiniAngel_6
+  - first:
+      213: -4617533322861671776
+    second: SpritesheetMiniAngel_7
+  - first:
+      213: -5596397558479613841
+    second: SpritesheetMiniAngel_8
+  - first:
+      213: -979084793475228547
+    second: SpritesheetMiniAngel_9
+  - first:
+      213: 6224984145029195068
+    second: SpritesheetMiniAngel_10
+  - first:
+      213: 3599854373108779752
+    second: SpritesheetMiniAngel_11
+  - first:
+      213: 3931129929967257160
+    second: SpritesheetMiniAngel_12
+  - first:
+      213: 8579113648042915329
+    second: SpritesheetMiniAngel_13
+  - first:
+      213: -6735791110728760025
+    second: SpritesheetMiniAngel_14
+  - first:
+      213: -4611773774097837626
+    second: SpritesheetMiniAngel_15
+  - first:
+      213: -2286330888882162914
+    second: SpritesheetMiniAngel_16
+  - first:
+      213: -3891615889244384775
+    second: SpritesheetMiniAngel_17
+  - first:
+      213: -5311277786689156756
+    second: SpritesheetMiniAngel_18
+  - first:
+      213: -3926268961400991783
+    second: SpritesheetMiniAngel_19
+  - first:
+      213: -3058339055896489724
+    second: SpritesheetMiniAngel_20
+  - first:
+      213: -1172125458452854910
+    second: SpritesheetMiniAngel_21
+  - first:
+      213: 55009364680964849
+    second: SpritesheetMiniAngel_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 383
+        width: 90
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f02ab37321b5f1680800000000000000
+      internalID: -8782200614554983921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_1
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 383
+        width: 90
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7c32889384a5c3c0800000000000000
+      internalID: -4339881780795261829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_2
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 383
+        width: 91
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d7a638095fb34960800000000000000
+      internalID: 7585116586532841425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_3
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 383
+        width: 91
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0912a1c1781481610800000000000000
+      internalID: 1592094516823335312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_4
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 383
+        width: 91
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09615dea75529b420800000000000000
+      internalID: 2646187314582460048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_5
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 271
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 510877265bc848180800000000000000
+      internalID: -9114005035222073323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_6
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 271
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c85ec2b6e45818d80800000000000000
+      internalID: -8250166470513990260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_7
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 271
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aa0d4858e93befb0800000000000000
+      internalID: -4617533322861671776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_8
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 271
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6095f0521a9552b0800000000000000
+      internalID: -5596397558479613841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_9
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 271
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7c1ce751979962f0800000000000000
+      internalID: -979084793475228547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_10
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 172
+        width: 90
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3567e83916936650800000000000000
+      internalID: 6224984145029195068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_11
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 172
+        width: 90
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ea0940ca7045f130800000000000000
+      internalID: 3599854373108779752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_12
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 172
+        width: 91
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 846ca91e7dd2e8630800000000000000
+      internalID: 3931129929967257160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_13
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 172
+        width: 90
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 106bd47a8622f0770800000000000000
+      internalID: 8579113648042915329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_14
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 172
+        width: 89
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72547cb2ca9a582a0800000000000000
+      internalID: -6735791110728760025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_15
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 82
+        width: 66
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c19f6acf20bfffb0800000000000000
+      internalID: -4611773774097837626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_16
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 82
+        width: 66
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e13fc298b225540e0800000000000000
+      internalID: -2286330888882162914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_17
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 0
+        width: 99
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f19257a7f33ef9c0800000000000000
+      internalID: -3891615889244384775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_18
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 82
+        width: 65
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6948fc4efc8a46b0800000000000000
+      internalID: -5311277786689156756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_19
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 82
+        width: 66
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9df4d0f8e271389c0800000000000000
+      internalID: -3926268961400991783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_20
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 82
+        width: 66
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 401169a15d89e85d0800000000000000
+      internalID: -3058339055896489724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_21
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 0
+        width: 77
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 287c9b01b16cbbfe0800000000000000
+      internalID: -1172125458452854910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniAngel_22
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 0
+        width: 91
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1faf029c9be63c000800000000000000
+      internalID: 55009364680964849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritesheetMiniAngel_0: -8782200614554983921
+      SpritesheetMiniAngel_1: -4339881780795261829
+      SpritesheetMiniAngel_10: 6224984145029195068
+      SpritesheetMiniAngel_11: 3599854373108779752
+      SpritesheetMiniAngel_12: 3931129929967257160
+      SpritesheetMiniAngel_13: 8579113648042915329
+      SpritesheetMiniAngel_14: -6735791110728760025
+      SpritesheetMiniAngel_15: -4611773774097837626
+      SpritesheetMiniAngel_16: -2286330888882162914
+      SpritesheetMiniAngel_17: -3891615889244384775
+      SpritesheetMiniAngel_18: -5311277786689156756
+      SpritesheetMiniAngel_19: -3926268961400991783
+      SpritesheetMiniAngel_2: 7585116586532841425
+      SpritesheetMiniAngel_20: -3058339055896489724
+      SpritesheetMiniAngel_21: -1172125458452854910
+      SpritesheetMiniAngel_22: 55009364680964849
+      SpritesheetMiniAngel_3: 1592094516823335312
+      SpritesheetMiniAngel_4: 2646187314582460048
+      SpritesheetMiniAngel_5: -9114005035222073323
+      SpritesheetMiniAngel_6: -8250166470513990260
+      SpritesheetMiniAngel_7: -4617533322861671776
+      SpritesheetMiniAngel_8: -5596397558479613841
+      SpritesheetMiniAngel_9: -979084793475228547
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

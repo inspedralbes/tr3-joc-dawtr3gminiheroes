@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 1a5355a9dec192b458296081f5a114d1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6081718931942616228
+    second: SpritesheetMiniArquero_0
+  - first:
+      213: -3502073776116792589
+    second: SpritesheetMiniArquero_1
+  - first:
+      213: 1959571511539947718
+    second: SpritesheetMiniArquero_2
+  - first:
+      213: -5965925208405289881
+    second: SpritesheetMiniArquero_3
+  - first:
+      213: 8197786957000192613
+    second: SpritesheetMiniArquero_4
+  - first:
+      213: 3354497310441980211
+    second: SpritesheetMiniArquero_5
+  - first:
+      213: 1924951815231934671
+    second: SpritesheetMiniArquero_6
+  - first:
+      213: 3014038950924725812
+    second: SpritesheetMiniArquero_7
+  - first:
+      213: -7196607006293793770
+    second: SpritesheetMiniArquero_8
+  - first:
+      213: 1583451183350788184
+    second: SpritesheetMiniArquero_9
+  - first:
+      213: 2146949662688298506
+    second: SpritesheetMiniArquero_10
+  - first:
+      213: -9214489970012992954
+    second: SpritesheetMiniArquero_11
+  - first:
+      213: 2189027358400282619
+    second: SpritesheetMiniArquero_12
+  - first:
+      213: -7430985774140354209
+    second: SpritesheetMiniArquero_13
+  - first:
+      213: 7825456979870949351
+    second: SpritesheetMiniArquero_14
+  - first:
+      213: -575726519863905208
+    second: SpritesheetMiniArquero_15
+  - first:
+      213: 6049303018235651850
+    second: SpritesheetMiniArquero_16
+  - first:
+      213: 5246117810533814046
+    second: SpritesheetMiniArquero_17
+  - first:
+      213: -6840627203210463402
+    second: SpritesheetMiniArquero_18
+  - first:
+      213: 3737044248900337837
+    second: SpritesheetMiniArquero_19
+  - first:
+      213: 1149893986072150689
+    second: SpritesheetMiniArquero_20
+  - first:
+      213: 5837718588362089140
+    second: SpritesheetMiniArquero_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 387
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ac2532752b966450800000000000000
+      internalID: 6081718931942616228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_1
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 387
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f209559472266fc0800000000000000
+      internalID: -3502073776116792589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_2
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 387
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c8505158ebc13b10800000000000000
+      internalID: 1959571511539947718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_3
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 387
+        width: 79
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 764547cb1a6c43da0800000000000000
+      internalID: -5965925208405289881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_4
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 387
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 562b35cbdc364c170800000000000000
+      internalID: 8197786957000192613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_5
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 275
+        width: 78
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 331c5ece7819d8e20800000000000000
+      internalID: 3354497310441980211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_6
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 275
+        width: 78
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc094a42a7dc6ba10800000000000000
+      internalID: 1924951815231934671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_7
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 275
+        width: 78
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43e2f01f47404d920800000000000000
+      internalID: 3014038950924725812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_8
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 275
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61465c99e04802c90800000000000000
+      internalID: -7196607006293793770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_9
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 275
+        width: 78
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 850bbc6367c89f510800000000000000
+      internalID: 1583451183350788184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_10
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 176
+        width: 80
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a064e2bd75f7bcd10800000000000000
+      internalID: 2146949662688298506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_11
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 177
+        width: 80
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64ac9f6513e8f1080800000000000000
+      internalID: -9214489970012992954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_12
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 177
+        width: 79
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bff7f05d8ccf06e10800000000000000
+      internalID: 2189027358400282619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_13
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 177
+        width: 80
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5112693fc5dfd890800000000000000
+      internalID: -7430985774140354209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_14
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 177
+        width: 79
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ef1f4289ab999c60800000000000000
+      internalID: 7825456979870949351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_15
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 88
+        width: 65
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8447dbfc7cb9208f0800000000000000
+      internalID: -575726519863905208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_16
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 86
+        width: 64
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0762a46b0173f350800000000000000
+      internalID: 6049303018235651850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_17
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 86
+        width: 64
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1fc7b28a54fdc840800000000000000
+      internalID: 5246117810533814046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_18
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 88
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65734c74dc53111a0800000000000000
+      internalID: -6840627203210463402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_19
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 86
+        width: 64
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da00f95d1f5acd330800000000000000
+      internalID: 3737044248900337837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_20
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 3
+        width: 72
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a24039ec7e35ff00800000000000000
+      internalID: 1149893986072150689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritesheetMiniArquero_21
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 3
+        width: 84
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b26406602eb30150800000000000000
+      internalID: 5837718588362089140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritesheetMiniArquero_0: 6081718931942616228
+      SpritesheetMiniArquero_1: -3502073776116792589
+      SpritesheetMiniArquero_10: 2146949662688298506
+      SpritesheetMiniArquero_11: -9214489970012992954
+      SpritesheetMiniArquero_12: 2189027358400282619
+      SpritesheetMiniArquero_13: -7430985774140354209
+      SpritesheetMiniArquero_14: 7825456979870949351
+      SpritesheetMiniArquero_15: -575726519863905208
+      SpritesheetMiniArquero_16: 6049303018235651850
+      SpritesheetMiniArquero_17: 5246117810533814046
+      SpritesheetMiniArquero_18: -6840627203210463402
+      SpritesheetMiniArquero_19: 3737044248900337837
+      SpritesheetMiniArquero_2: 1959571511539947718
+      SpritesheetMiniArquero_20: 1149893986072150689
+      SpritesheetMiniArquero_21: 5837718588362089140
+      SpritesheetMiniArquero_3: -5965925208405289881
+      SpritesheetMiniArquero_4: 8197786957000192613
+      SpritesheetMiniArquero_5: 3354497310441980211
+      SpritesheetMiniArquero_6: 1924951815231934671
+      SpritesheetMiniArquero_7: 3014038950924725812
+      SpritesheetMiniArquero_8: -7196607006293793770
+      SpritesheetMiniArquero_9: 1583451183350788184
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
