@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: MiniHeroes2D Backend API
+  version: 0.1.0
+  description: |
+    Backend mínimo (matchmaking/progresión) para MiniHeroes2D.
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Meta
+  - name: Sessions
+  - name: Profiles
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    PlayerRef:
+      type: object
+      properties:
+        playerId:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required: [playerId, name]
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        joinCode:
+          type: string
+          description: Código corto para compartir (no seguro, solo demo).
+        createdAt:
+          type: string
+          format: date-time
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlayerRef"
+        error:
+          type: string
+          description: Solo se devuelve en algunos estados (ej. SESSION_FULL).
+      required: [id, joinCode, createdAt, players]
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        xp:
+          type: integer
+          minimum: 0
+        gold:
+          type: integer
+          minimum: 0
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, name, xp, gold, updatedAt]
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags: [Meta]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                required: [ok]
+  /sessions:
+    post:
+      summary: Crear sesión (host)
+      tags: [Sessions]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hostName:
+                  type: string
+      responses:
+        "201":
+          description: Sesión creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+  /sessions/{id}:
+    get:
+      summary: Ver sesión
+      tags: [Sessions]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sessions/{id}/join:
+    post:
+      summary: Unirse a una sesión (2º jugador)
+      tags: [Sessions]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playerName:
+                  type: string
+      responses:
+        "200":
+          description: Sesión (puede incluir error SESSION_FULL)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /profiles/{playerId}:
+    get:
+      summary: Ver perfil
+      tags: [Profiles]
+      parameters:
+        - in: path
+          name: playerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Perfil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /profiles/{playerId}/progression:
+    post:
+      summary: Actualizar XP/oro (delta)
+      tags: [Profiles]
+      parameters:
+        - in: path
+          name: playerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                xpDelta:
+                  type: integer
+                goldDelta:
+                  type: integer
+      responses:
+        "200":
+          description: Perfil actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
