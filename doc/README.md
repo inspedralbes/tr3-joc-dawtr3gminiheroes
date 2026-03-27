@@ -17,3 +17,8 @@ Llistat d'alguns dels punts que han de quedar explicats en aquesta carpeta. Pode
  * Aplicació Android
  * Altres elements importants.
  * ...
+
+## API
+
+- EspecificaciÃ³ OpenAPI (OpenSpec): `specs/openapi.yaml`
+- Notes d'Ãºs i execuciÃ³: `doc/api.md`
