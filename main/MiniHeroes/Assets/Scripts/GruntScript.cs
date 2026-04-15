@@ -5,6 +5,7 @@ public class GruntScript : MonoBehaviour
     public GameObject John;
     public GameObject Bullet;
     private float LastShoot;
+    private int MaxHealth = 5;
     private int Health = 5;
 
     private void Update()
@@ -45,6 +46,30 @@ public class GruntScript : MonoBehaviour
         if (Health == 0)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (Camera.main != null)
+        {
+            Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.6f);
+            
+            float barWidth = 40f;
+            float barHeight = 10f;
+            Rect rect = new Rect(screenPosition.x - barWidth / 2, Screen.height - screenPosition.y - barHeight, barWidth, barHeight);
+            
+            // Background
+            GUI.color = Color.black;
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            
+            // Foreground (Health)
+            GUI.color = Color.red; // Grunts might have red health bars
+            Rect healthRect = new Rect(rect.x, rect.y, rect.width * ((float)Health / MaxHealth), rect.height);
+            GUI.DrawTexture(healthRect, Texture2D.whiteTexture);
+            
+            // Reset GUI color
+            GUI.color = Color.white;
         }
     }
 }
