@@ -15,6 +15,7 @@ public class JohnMovement : MonoBehaviour
     private int MaxHealth = 10;
     private int Health = 10;
     private bool isDead = false;
+    private bool showStatsMenu = false;
     
     void Start()
     {
@@ -25,6 +26,12 @@ public class JohnMovement : MonoBehaviour
     void Update()
     {
         if (isDead || Time.timeScale == 0) return;
+
+        // Abrir / Cerrar menú de estadísticas con la tecla M
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            showStatsMenu = !showStatsMenu;
+        }
 
         Horizontal = Input.GetAxis("Horizontal");
 
@@ -103,6 +110,12 @@ public class JohnMovement : MonoBehaviour
             return;
         }
 
+        // Dibujar menú de estadísticas si está activo
+        if (showStatsMenu)
+        {
+            DrawStatsMenu();
+        }
+
         if (Camera.main != null)
         {
             Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.6f);
@@ -178,6 +191,47 @@ public class JohnMovement : MonoBehaviour
             }
         }
         
+        GUI.backgroundColor = Color.white;
+    }
+
+    private void DrawStatsMenu()
+    {
+        int width = 250;
+        int height = 180;
+        float x = 20; // Alineado a la izquierda
+        float y = 20; // Alineado arriba
+
+        // Fondo verde oscuro semi-transparente
+        GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
+        GUI.Box(new Rect(x, y, width, height), "");
+
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
+        titleStyle.fontSize = 20;
+        titleStyle.fontStyle = FontStyle.Bold;
+        titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado tropical
+        titleStyle.alignment = TextAnchor.MiddleCenter;
+
+        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS", titleStyle);
+
+        GUIStyle statStyle = new GUIStyle(GUI.skin.label);
+        statStyle.fontSize = 16;
+        statStyle.fontStyle = FontStyle.Bold;
+        statStyle.normal.textColor = Color.white;
+
+        float paddingY = 55;
+        float lineHeight = 28;
+
+        GUI.Label(new Rect(x + 20, y + paddingY, width, 30), "♥ Salud: " + Health + " / " + MaxHealth, statStyle);
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, width, 30), "⚡ Velocidad: " + Speed, statStyle);
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, width, 30), "⬆ Salto: " + JumpForce, statStyle);
+
+        // Texto informativo de cerrar
+        GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
+        infoStyle.fontSize = 12;
+        infoStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
+        infoStyle.alignment = TextAnchor.MiddleCenter;
+        GUI.Label(new Rect(x, y + height - 30, width, 20), "Pulsa 'M' para cerrar", infoStyle);
+
         GUI.backgroundColor = Color.white;
     }
 }
