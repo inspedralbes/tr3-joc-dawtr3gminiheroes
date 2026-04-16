@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class AuthManager : MonoBehaviour
@@ -13,6 +14,10 @@ public class AuthManager : MonoBehaviour
 
     // URL del servidor Node.js
     private string backendUrl = "http://localhost:3000/api/";
+
+    [Header("Configuración de Escenas")]
+    [Tooltip("Escribe el nombre de la escena del juego (ej: 'SampleScene'). Si lo dejas vacío, simplemente se ocultará el login y reanudará el juego actual.")]
+    public string sceneToLoadAfterLogin = "";
 
     // Clases para serializar/deserializar JSON nativamente en Unity
     [System.Serializable]
@@ -32,14 +37,19 @@ public class AuthManager : MonoBehaviour
 
     void Start()
     {
-        // Pausar el juego al iniciar (todo se queda congelado hasta loguearse)
-        Time.timeScale = 0;
-
         // Comprobar si ya existe una sesión guardada localmente
         if (PlayerPrefs.HasKey("session_token"))
         {
             isLoggedIn = true;
-            Time.timeScale = 1; // Reanudar
+            Time.timeScale = 1; // Asegurarnos de que el tiempo corra
+            if (!string.IsNullOrEmpty(sceneToLoadAfterLogin))
+            {
+                SceneManager.LoadScene(sceneToLoadAfterLogin);
+            }
+        }
+        else
+        {
+            Time.timeScale = 0; // Pausar todo mientras esperamos
         }
     }
 
@@ -54,6 +64,10 @@ public class AuthManager : MonoBehaviour
         float y = (Screen.height - height) / 2;
 
         // ==== ESTILOS TIPO JUNGLA ====
+        
+        // Primero dibujamos un fondo para que sea una pantalla "A parte" completa si así se desea
+        GUI.backgroundColor = new Color(0.05f, 0.15f, 0.05f); // Fondo verde muy, muy oscuro casi negro
+        GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
         
         // Color general de fondo para cajas y botones oscuros (Verde Jungla Oscuro)
         GUI.backgroundColor = new Color(0.1f, 0.25f, 0.1f);
@@ -151,11 +165,16 @@ public class AuthManager : MonoBehaviour
                 PlayerPrefs.SetString("session_token", resData.token);
                 PlayerPrefs.Save();
                 
-                message = "¡Login exitoso!";
+                message = "¡Login exitoso! Entrando a la Jungla...";
                 yield return new WaitForSecondsRealtime(0.5f);
                 
                 isLoggedIn = true;
-                Time.timeScale = 1; // Volver a reanudar la acción del juego
+                Time.timeScale = 1; // Volver a reanudar el tiempo
+                
+                if (!string.IsNullOrEmpty(sceneToLoadAfterLogin))
+                {
+                    SceneManager.LoadScene(sceneToLoadAfterLogin);
+                }
             }
             else
             {

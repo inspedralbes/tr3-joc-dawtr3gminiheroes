@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JohnMovement : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class JohnMovement : MonoBehaviour
     private float LastShoot;
     private int MaxHealth = 10;
     private int Health = 10;
+    private bool isDead = false;
     
     void Start()
     {
@@ -22,6 +24,8 @@ public class JohnMovement : MonoBehaviour
 
     void Update()
     {
+        if (isDead || Time.timeScale == 0) return;
+
         Horizontal = Input.GetAxis("Horizontal");
 
         if(Horizontal < 0.0f) transform.localScale = new Vector3(-1, 1, 1);
@@ -75,20 +79,30 @@ public class JohnMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDead) return;
         Rigidbody2D.linearVelocity = new Vector2(Horizontal, Rigidbody2D.linearVelocity.y);
     }
     
     public void Hit()
     {
+        if (isDead) return;
+        
         Health = Health - 1;
-        if (Health == 0)
+        if (Health <= 0)
         {
-            Destroy(gameObject);
+            isDead = true;
+            Time.timeScale = 0; // Pausar todo el juego
         }
     }
 
     private void OnGUI()
     {
+        if (isDead)
+        {
+            DrawDefeatScreen();
+            return;
+        }
+
         if (Camera.main != null)
         {
             Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.6f);
@@ -109,5 +123,61 @@ public class JohnMovement : MonoBehaviour
             // Reset GUI color
             GUI.color = Color.white;
         }
+    }
+
+    private void DrawDefeatScreen()
+    {
+        // Fondo oscuro
+        GUI.backgroundColor = new Color(0, 0, 0, 0.8f);
+        GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
+
+        GUI.backgroundColor = new Color(0.8f, 0.2f, 0.2f); // Tema ROJO
+        GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+        boxStyle.fontSize = 30;
+        boxStyle.fontStyle = FontStyle.Bold;
+        boxStyle.normal.textColor = Color.white;
+
+        int width = 400;
+        int height = 250;
+        float x = (Screen.width - width) / 2;
+        float y = (Screen.height - height) / 2;
+
+        GUI.Box(new Rect(x, y, width, height), "¡ HAS MUERTO !", boxStyle);
+
+        // Estilos de botones
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+        buttonStyle.fontSize = 20;
+
+        // Botón Reintentar
+        GUI.backgroundColor = new Color(0.3f, 0.6f, 0.3f); // Verde
+        if (GUI.Button(new Rect(x + 50, y + 80, 300, 50), "Volver a Intentarlo", buttonStyle))
+        {
+            Time.timeScale = 1;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        // Botón Salir / Logout
+        GUI.backgroundColor = new Color(0.6f, 0.3f, 0.3f); // Rojo oscuro
+        if (GUI.Button(new Rect(x + 50, y + 150, 300, 50), "Salir (Cerrar Sesión)", buttonStyle))
+        {
+            Time.timeScale = 1;
+            
+            // Eliminamos la sesión guardada
+            PlayerPrefs.DeleteKey("session_token");
+            PlayerPrefs.Save();
+            
+            // Verificamos si existe la escena 'LoginScene' en los Build Settings
+            if (Application.CanStreamedLevelBeLoaded("LoginScene"))
+            {
+                SceneManager.LoadScene("LoginScene");
+            }
+            else
+            {
+                // Si usa el modo single-scene, simplemente recargamos para que el AuthManager vuelva a pedir login
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        
+        GUI.backgroundColor = Color.white;
     }
 }
