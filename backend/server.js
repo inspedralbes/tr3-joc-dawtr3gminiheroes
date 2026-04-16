@@ -23,7 +23,11 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password TEXT
-        )`);
+        )`, () => {
+            // Modificaciones por si la tabla ya existía de antes
+            db.run(`ALTER TABLE users ADD COLUMN experience INTEGER DEFAULT 0`, (err) => {});
+            db.run(`ALTER TABLE users ADD COLUMN grunts_killed INTEGER DEFAULT 0`, (err) => {});
+        });
     }
 });
 
@@ -92,6 +96,27 @@ const verifyToken = (req, res, next) => {
 app.get('/api/me', verifyToken, (req, res) => {
     // Si se llega a ejecutar esto, significa que el token era válido y es de ese usuario
     res.json({ message: 'Sesión confirmada', user: req.user });
+});
+
+// Obtener estadísticas guardadas
+app.get('/api/stats', verifyToken, (req, res) => {
+    db.get('SELECT experience, grunts_killed FROM users WHERE id = ?', [req.user.id], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Error en la base de datos' });
+        res.json(row || { experience: 0, grunts_killed: 0 });
+    });
+});
+
+// Guardar/Actualizar estadísticas
+app.post('/api/stats', verifyToken, (req, res) => {
+    const { experience, grunts_killed } = req.body;
+    db.run(
+        'UPDATE users SET experience = ?, grunts_killed = ? WHERE id = ?',
+        [experience || 0, grunts_killed || 0, req.user.id],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Error en la base de datos al guardar' });
+            res.json({ message: 'Estadísticas guardadas con éxito', experience, grunts_killed });
+        }
+    );
 });
 
 // Arrancar servidor

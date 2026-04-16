@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class JohnMovement : MonoBehaviour
 {
@@ -18,11 +20,63 @@ public class JohnMovement : MonoBehaviour
     private bool showStatsMenu = false;
     private int Experience = 0;
     private int MaxExperience = 100;
+    private int GruntsKilled = 0;
+
+    private string backendUrl = "http://localhost:3000/api/";
+
+    [System.Serializable]
+    private class StatsData
+    {
+        public int experience;
+        public int grunts_killed;
+    }
     
     void Start()
     {
         Rigidbody2D = GetComponent<Rigidbody2D>();
         Animator = GetComponent<Animator>();
+
+        // Cargar estadísticas desde la BBDD si hay cuenta iniciada
+        if (PlayerPrefs.HasKey("session_token"))
+        {
+            StartCoroutine(LoadStatsRoutine());
+        }
+    }
+
+    IEnumerator LoadStatsRoutine()
+    {
+        UnityWebRequest request = UnityWebRequest.Get(backendUrl + "stats");
+        request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("session_token"));
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            StatsData stats = JsonUtility.FromJson<StatsData>(request.downloadHandler.text);
+            if (stats != null)
+            {
+                Experience = stats.experience;
+                GruntsKilled = stats.grunts_killed;
+            }
+        }
+    }
+
+    IEnumerator SaveStatsRoutine()
+    {
+        if (!PlayerPrefs.HasKey("session_token")) yield break;
+
+        StatsData data = new StatsData();
+        data.experience = Experience;
+        data.grunts_killed = GruntsKilled;
+        string json = JsonUtility.ToJson(data);
+
+        UnityWebRequest request = new UnityWebRequest(backendUrl + "stats", "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("session_token"));
+
+        yield return request.SendWebRequest();
     }
 
     void Update()
@@ -96,6 +150,10 @@ public class JohnMovement : MonoBehaviour
     {
         if (isDead) return;
         Experience += amount;
+        GruntsKilled += 1;
+        
+        // Guardar automáticamente en el backend Node.js
+        StartCoroutine(SaveStatsRoutine());
     }
 
     public void Hit()
@@ -220,7 +278,7 @@ public class JohnMovement : MonoBehaviour
     private void DrawStatsMenu()
     {
         int width = 250;
-        int height = 210;
+        int height = 240; // Más alto para añadir bajas
         float x = 20; // Alineado a la izquierda
         float y = 20; // Alineado arriba
 
@@ -248,6 +306,7 @@ public class JohnMovement : MonoBehaviour
         GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, width, 30), "⚡ Velocidad: " + Speed, statStyle);
         GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, width, 30), "⬆ Salto: " + JumpForce, statStyle);
         GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 3, width, 30), "⭐ Experiencia: " + Experience + " XP", statStyle);
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 4, width, 30), "⚔️ Bajas: " + GruntsKilled + " Grunts", statStyle);
 
         // Texto informativo de cerrar
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
