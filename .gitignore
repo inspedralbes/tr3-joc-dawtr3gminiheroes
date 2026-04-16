@@ -41,3 +41,5 @@ Thumbs.db
 
 # ========== CRASH REPORTS ==========
 sysinfo.txt
+
+node_modules/
