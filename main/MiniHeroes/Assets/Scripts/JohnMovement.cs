@@ -16,6 +16,8 @@ public class JohnMovement : MonoBehaviour
     private int Health = 10;
     private bool isDead = false;
     private bool showStatsMenu = false;
+    private int Experience = 0;
+    private int MaxExperience = 100;
     
     void Start()
     {
@@ -90,6 +92,12 @@ public class JohnMovement : MonoBehaviour
         Rigidbody2D.linearVelocity = new Vector2(Horizontal, Rigidbody2D.linearVelocity.y);
     }
     
+    public void AddExperience(int amount)
+    {
+        if (isDead) return;
+        Experience += amount;
+    }
+
     public void Hit()
     {
         if (isDead) return;
@@ -132,6 +140,21 @@ public class JohnMovement : MonoBehaviour
             GUI.color = Color.green;
             Rect healthRect = new Rect(rect.x, rect.y, rect.width * ((float)Health / MaxHealth), rect.height);
             GUI.DrawTexture(healthRect, Texture2D.whiteTexture);
+
+            // --- BARRA DE EXPERIENCIA ---
+            float xpBarHeight = 6f; // Un poco más delgada que la de vida
+            float spaceBetween = 2f;
+            Rect xpRect = new Rect(rect.x, rect.y + rect.height + spaceBetween, barWidth, xpBarHeight);
+            
+            // Background (Blanco, como pediste)
+            GUI.color = Color.white;
+            GUI.DrawTexture(xpRect, Texture2D.whiteTexture);
+
+            // Foreground (Amarillo)
+            GUI.color = Color.yellow;
+            float xpRatio = Mathf.Clamp01((float)Experience / MaxExperience);
+            Rect xpFillRect = new Rect(xpRect.x, xpRect.y, xpRect.width * xpRatio, xpRect.height);
+            GUI.DrawTexture(xpFillRect, Texture2D.whiteTexture);
             
             // Reset GUI color
             GUI.color = Color.white;
@@ -197,7 +220,7 @@ public class JohnMovement : MonoBehaviour
     private void DrawStatsMenu()
     {
         int width = 250;
-        int height = 180;
+        int height = 210;
         float x = 20; // Alineado a la izquierda
         float y = 20; // Alineado arriba
 
@@ -224,6 +247,7 @@ public class JohnMovement : MonoBehaviour
         GUI.Label(new Rect(x + 20, y + paddingY, width, 30), "♥ Salud: " + Health + " / " + MaxHealth, statStyle);
         GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, width, 30), "⚡ Velocidad: " + Speed, statStyle);
         GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, width, 30), "⬆ Salto: " + JumpForce, statStyle);
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 3, width, 30), "⭐ Experiencia: " + Experience + " XP", statStyle);
 
         // Texto informativo de cerrar
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);

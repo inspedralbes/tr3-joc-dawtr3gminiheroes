@@ -43,8 +43,16 @@ public class GruntScript : MonoBehaviour
     public void Hit()
     {
         Health = Health - 1;
-        if (Health == 0)
+        if (Health <= 0)
         {
+            if (John != null)
+            {
+                JohnMovement johnScript = John.GetComponent<JohnMovement>();
+                if (johnScript != null)
+                {
+                    johnScript.AddExperience(5);
+                }
+            }
             Destroy(gameObject);
         }
     }
