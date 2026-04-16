@@ -19,8 +19,9 @@ public class JohnMovement : MonoBehaviour
     private bool isDead = false;
     private bool showStatsMenu = false;
     private int Experience = 0;
-    private int MaxExperience = 100;
+    private int MaxExperience = 20;
     private int GruntsKilled = 0;
+    private int Level = 1;
 
     private string backendUrl = "http://localhost:3000/api/";
 
@@ -29,6 +30,7 @@ public class JohnMovement : MonoBehaviour
     {
         public int experience;
         public int grunts_killed;
+        public int level;
     }
     
     void Start()
@@ -36,10 +38,21 @@ public class JohnMovement : MonoBehaviour
         Rigidbody2D = GetComponent<Rigidbody2D>();
         Animator = GetComponent<Animator>();
 
+        CalculateMaxExperience();
+
         // Cargar estadísticas desde la BBDD si hay cuenta iniciada
         if (PlayerPrefs.HasKey("session_token"))
         {
             StartCoroutine(LoadStatsRoutine());
+        }
+    }
+
+    private void CalculateMaxExperience()
+    {
+        MaxExperience = 20;
+        for (int i = 1; i < Level; i++)
+        {
+            MaxExperience = Mathf.FloorToInt(MaxExperience * 1.5f);
         }
     }
 
@@ -56,6 +69,8 @@ public class JohnMovement : MonoBehaviour
             {
                 Experience = stats.experience;
                 GruntsKilled = stats.grunts_killed;
+                if (stats.level > 0) Level = stats.level;
+                CalculateMaxExperience();
             }
         }
     }
@@ -67,6 +82,7 @@ public class JohnMovement : MonoBehaviour
         StatsData data = new StatsData();
         data.experience = Experience;
         data.grunts_killed = GruntsKilled;
+        data.level = Level;
         string json = JsonUtility.ToJson(data);
 
         UnityWebRequest request = new UnityWebRequest(backendUrl + "stats", "POST");
@@ -152,6 +168,14 @@ public class JohnMovement : MonoBehaviour
         Experience += amount;
         GruntsKilled += 1;
         
+        // Comprobar si sube de nivel
+        while (Experience >= MaxExperience)
+        {
+            Experience -= MaxExperience;
+            Level++;
+            CalculateMaxExperience();
+        }
+
         // Guardar automáticamente en el backend Node.js
         StartCoroutine(SaveStatsRoutine());
     }
@@ -190,6 +214,14 @@ public class JohnMovement : MonoBehaviour
             float barHeight = 12f;
             Rect rect = new Rect(screenPosition.x - barWidth / 2, Screen.height - screenPosition.y - barHeight, barWidth, barHeight);
             
+            // DIBUJAR EL NIVEL (ENCIMA DE LA BARRA DE VIDA)
+            GUIStyle levelStyle = new GUIStyle();
+            levelStyle.alignment = TextAnchor.MiddleCenter;
+            levelStyle.fontStyle = FontStyle.Bold;
+            levelStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado
+            levelStyle.fontSize = 12;
+            GUI.Label(new Rect(rect.x, rect.y - 18f, rect.width, 20), "Lv. " + Level, levelStyle);
+
             // Background
             GUI.color = Color.black;
             GUI.DrawTexture(rect, Texture2D.whiteTexture);
@@ -292,7 +324,7 @@ public class JohnMovement : MonoBehaviour
         titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado tropical
         titleStyle.alignment = TextAnchor.MiddleCenter;
 
-        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS", titleStyle);
+        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS (Lv. " + Level + ")", titleStyle);
 
         GUIStyle statStyle = new GUIStyle(GUI.skin.label);
         statStyle.fontSize = 16;
