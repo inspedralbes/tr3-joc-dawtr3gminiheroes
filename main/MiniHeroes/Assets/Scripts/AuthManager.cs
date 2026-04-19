@@ -24,7 +24,7 @@ public class AuthManager : MonoBehaviour
     private string password = string.Empty;
     private string message = string.Empty;
 
-    private readonly string backendUrl = "http://localhost:3000/api/";
+    private readonly string backendUrl = "https://backend-miniheroes.onrender.com/api/";
 
     [Header("Scene Configuration")]
     [Tooltip("Scene loaded after a successful login. Leave empty to stay on the current scene.")]
@@ -34,14 +34,17 @@ public class AuthManager : MonoBehaviour
     [Tooltip("Scene loaded when selecting Solo mode.")]
     public string soloSceneName = "SampleScene";
 
-    [Header("Multiplayer Lobby")]
-    public int lobbyPort = 7777;
-    public string defaultJoinAddress = "127.0.0.1";
+    [Header("Multiplayer (WebSocket)")]
+    public string websocketUrl = "wss://miniheroes.dam.inspedralbes.cat/ws";
 
-    private string joinAddress;
+    [Tooltip("Scene loaded when starting a multiplayer match.")]
+    public string multiplayerSceneName = "SampleScene";
+
+    private string roomCode = string.Empty;
+    private string createdRoomCode = string.Empty;
     private string lobbyStatus = string.Empty;
     private bool lobbyBusy;
-    private MiniHeroesLobbyNetwork lobbyNetwork;
+    private MiniHeroesWsLobbyClient wsLobby;
     private Camera menuCamera;
 
     private int cachedLevel = 1;
@@ -109,12 +112,14 @@ public class AuthManager : MonoBehaviour
             uiState = UiState.Login;
         }
 
-        joinAddress = string.IsNullOrWhiteSpace(defaultJoinAddress) ? "127.0.0.1" : defaultJoinAddress;
-        lobbyNetwork = GetComponent<MiniHeroesLobbyNetwork>();
-        if (lobbyNetwork == null)
+        wsLobby = GetComponent<MiniHeroesWsLobbyClient>();
+        if (wsLobby == null)
         {
-            lobbyNetwork = gameObject.AddComponent<MiniHeroesLobbyNetwork>();
+            wsLobby = gameObject.AddComponent<MiniHeroesWsLobbyClient>();
         }
+        wsLobby.LobbyUpdated += OnLobbyUpdated;
+        wsLobby.Error += OnLobbyError;
+        wsLobby.StartGameReceived += OnStartGameReceived;
 
         EnsureMenuCamera();
     }
@@ -140,10 +145,7 @@ public class AuthManager : MonoBehaviour
         instance.message = string.Empty;
         instance.lobbyStatus = string.Empty;
         instance.lobbyBusy = false;
-        if (instance.lobbyNetwork != null)
-        {
-            instance.lobbyNetwork.StopAll();
-        }
+        instance.wsLobby?.Disconnect();
         PlayerPrefs.DeleteKey("session_token");
         PlayerPrefs.Save();
         Time.timeScale = 0f;
@@ -311,7 +313,7 @@ public class AuthManager : MonoBehaviour
     private void DrawLoggedInUi()
     {
         int width = 520;
-        int height = 360;
+        int height = 430;
         float x = (Screen.width - width) / 2f;
         float y = (Screen.height - height) / 2f;
 
@@ -383,22 +385,22 @@ public class AuthManager : MonoBehaviour
             {
                 GUI.Box(new Rect(x, y, width, height), " MULTIJUGADOR ", boxStyle);
 
-                GUI.Label(new Rect(x + padding, y + 90f, width - (padding * 2f), 25f), "IP para unirse:", labelStyle);
-                joinAddress = GUI.TextField(new Rect(x + padding, y + 120f, width - (padding * 2f), 35f), joinAddress);
+                GUI.Label(new Rect(x + padding, y + 85f, width - (padding * 2f), 25f), "Codigo de sala:", labelStyle);
+                roomCode = GUI.TextField(new Rect(x + padding, y + 115f, width - (padding * 2f), 35f), roomCode);
 
                 GUI.backgroundColor = new Color(0.2f, 0.6f, 0.2f);
                 GUI.enabled = !lobbyBusy;
                 if (GUI.Button(new Rect(x + padding, y + 170f, width - (padding * 2f), 50f), "Crear Sala", buttonStyle))
                 {
                     lobbyStatus = string.Empty;
-                    StartCoroutine(BeginHostRoutine());
+                    StartCoroutine(BeginCreateRoomRoutine());
                 }
 
                 GUI.backgroundColor = new Color(0.2f, 0.45f, 0.6f);
                 if (GUI.Button(new Rect(x + padding, y + 235f, width - (padding * 2f), 50f), "Unirse a Sala", buttonStyle))
                 {
                     lobbyStatus = string.Empty;
-                    StartCoroutine(BeginJoinRoutine());
+                    StartCoroutine(BeginJoinRoomRoutine());
                 }
                 GUI.enabled = true;
 
@@ -408,10 +410,7 @@ public class AuthManager : MonoBehaviour
                     uiState = UiState.ModeSelect;
                     lobbyStatus = string.Empty;
                     lobbyBusy = false;
-                    if (lobbyNetwork != null)
-                    {
-                        lobbyNetwork.StopAll();
-                    }
+                    wsLobby?.Disconnect();
                 }
 
                 if (GUI.Button(new Rect(x + padding + (width - (padding * 2f)) / 2f + 10f, y + 300f, (width - (padding * 2f)) / 2f - 10f, 35f), "Cerrar sesion", smallButtonStyle))
@@ -435,16 +434,12 @@ public class AuthManager : MonoBehaviour
             {
                 GUI.Box(new Rect(x, y, width, height), " LOBBY ", boxStyle);
 
-                string header = (lobbyNetwork != null && lobbyNetwork.IsServer)
-                    ? "Sala creada. Comparte tu IP local y el puerto " + lobbyPort
-                    : "Conectado al lobby.";
+                string codeToShow = !string.IsNullOrEmpty(createdRoomCode) ? createdRoomCode : roomCode;
+                string header = wsLobby != null && wsLobby.IsHost
+                    ? "Sala creada. Codigo: " + codeToShow
+                    : "Conectado. Codigo: " + codeToShow;
 
                 GUI.Label(new Rect(x + padding, y + 75f, width - (padding * 2f), 20f), header, labelStyle);
-
-                if (lobbyNetwork != null && lobbyNetwork.IsServer && !string.IsNullOrEmpty(lobbyNetwork.HostAddressHint))
-                {
-                    GUI.Label(new Rect(x + padding, y + 95f, width - (padding * 2f), 20f), "IP sugerida: " + lobbyNetwork.HostAddressHint + ":" + lobbyPort, labelStyle);
-                }
 
                 DrawLobbySlots(new Rect(x + padding, y + 125f, width - (padding * 2f), 170f));
 
@@ -453,15 +448,26 @@ public class AuthManager : MonoBehaviour
                     GUI.Label(new Rect(x + padding, y + 295f, width - (padding * 2f), 20f), lobbyStatus, labelStyle);
                 }
 
+                if (wsLobby != null && wsLobby.IsHost)
+                {
+                    GUI.backgroundColor = new Color(0.26f, 0.62f, 0.28f);
+                    GUI.enabled = !lobbyBusy;
+                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), "Empezar Partida", smallButtonStyle))
+                    {
+                        lobbyBusy = true;
+                        wsLobby.StartGame(multiplayerSceneName);
+                        lobbyBusy = false;
+                    }
+                    GUI.enabled = true;
+                }
+
                 GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
-                if (GUI.Button(new Rect(x + padding, y + 320f, width - (padding * 2f), 35f), "Salir del Lobby", smallButtonStyle))
+                float leaveY = wsLobby != null && wsLobby.IsHost ? (y + 355f) : (y + 320f);
+                if (GUI.Button(new Rect(x + padding, leaveY, width - (padding * 2f), 35f), "Salir del Lobby", smallButtonStyle))
                 {
                     lobbyStatus = string.Empty;
                     lobbyBusy = false;
-                    if (lobbyNetwork != null)
-                    {
-                        lobbyNetwork.StopAll();
-                    }
+                    wsLobby?.Disconnect();
                     uiState = UiState.MultiplayerMenu;
                 }
 
@@ -487,9 +493,18 @@ public class AuthManager : MonoBehaviour
             Rect slotRect = new Rect(rect.x, y, rect.width, slotHeight);
             string text = "Slot " + (i + 1) + ": (vacio)";
 
-            if (lobbyNetwork != null)
+            if (wsLobby != null)
             {
-                MiniHeroesLobbyNetwork.LobbyPlayerInfo player = lobbyNetwork.GetPlayerInSlot(i + 1);
+                MiniHeroesWsLobbyClient.LobbyPlayerInfo player = null;
+                for (int j = 0; j < wsLobby.Players.Count; j++)
+                {
+                    if (wsLobby.Players[j] != null && wsLobby.Players[j].slot == (i + 1))
+                    {
+                        player = wsLobby.Players[j];
+                        break;
+                    }
+                }
+
                 if (player != null)
                 {
                     text = "Slot " + player.slot + ": " + player.username + " | Nivel " + player.level + " | XP " + player.experience + " | Kills " + player.grunts_killed;
@@ -505,10 +520,7 @@ public class AuthManager : MonoBehaviour
         uiState = UiState.InGame;
         lobbyStatus = string.Empty;
         lobbyBusy = false;
-        if (lobbyNetwork != null)
-        {
-            lobbyNetwork.StopAll();
-        }
+        wsLobby?.Disconnect();
 
         if (!string.IsNullOrEmpty(soloSceneName) && Application.CanStreamedLevelBeLoaded(soloSceneName))
         {
@@ -525,47 +537,43 @@ public class AuthManager : MonoBehaviour
         }
     }
 
-    private IEnumerator BeginHostRoutine()
+    private IEnumerator BeginCreateRoomRoutine()
     {
         lobbyBusy = true;
         lobbyStatus = "Cargando stats...";
         yield return LoadLocalStatsRoutine();
 
         string displayName = PlayerPrefs.GetString("username", "Player");
-        lobbyNetwork.StopAll();
-        bool ok = lobbyNetwork.StartHost(displayName, cachedLevel, cachedExperience, cachedGruntsKilled, lobbyPort);
-        lobbyBusy = false;
 
-        if (!ok)
-        {
-            lobbyStatus = string.IsNullOrEmpty(lobbyNetwork.LastError) ? "No se pudo crear la sala." : lobbyNetwork.LastError;
-            uiState = UiState.MultiplayerMenu;
-            yield break;
-        }
+        createdRoomCode = GenerateRoomCode(6);
+        roomCode = createdRoomCode;
+        wsLobby.Disconnect();
+        wsLobby.Connect(websocketUrl, createdRoomCode, displayName, cachedLevel, cachedExperience, cachedGruntsKilled);
+        lobbyBusy = false;
 
         lobbyStatus = string.Empty;
         uiState = UiState.Lobby;
     }
 
-    private IEnumerator BeginJoinRoutine()
+    private IEnumerator BeginJoinRoomRoutine()
     {
         lobbyBusy = true;
         lobbyStatus = "Cargando stats...";
         yield return LoadLocalStatsRoutine();
 
-        string address = string.IsNullOrWhiteSpace(joinAddress) ? "127.0.0.1" : joinAddress.Trim();
-        string displayName = PlayerPrefs.GetString("username", "Player");
-
-        lobbyNetwork.StopAll();
-        bool ok = lobbyNetwork.StartClient(address, displayName, cachedLevel, cachedExperience, cachedGruntsKilled, lobbyPort);
-        lobbyBusy = false;
-
-        if (!ok)
+        string code = string.IsNullOrWhiteSpace(roomCode) ? string.Empty : roomCode.Trim().ToUpperInvariant();
+        if (string.IsNullOrEmpty(code))
         {
-            lobbyStatus = string.IsNullOrEmpty(lobbyNetwork.LastError) ? "No se pudo unir a la sala." : lobbyNetwork.LastError;
-            uiState = UiState.MultiplayerMenu;
+            lobbyBusy = false;
+            lobbyStatus = "Introduce un codigo de sala.";
             yield break;
         }
+        string displayName = PlayerPrefs.GetString("username", "Player");
+
+        createdRoomCode = string.Empty;
+        wsLobby.Disconnect();
+        wsLobby.Connect(websocketUrl, code, displayName, cachedLevel, cachedExperience, cachedGruntsKilled);
+        lobbyBusy = false;
 
         lobbyStatus = string.Empty;
         uiState = UiState.Lobby;
@@ -603,6 +611,54 @@ public class AuthManager : MonoBehaviour
         {
             cachedLevel = stats.level;
         }
+    }
+
+    private void OnLobbyUpdated()
+    {
+        lobbyStatus = string.Empty;
+    }
+
+    private void OnLobbyError(string error)
+    {
+        lobbyStatus = error;
+    }
+
+    private void OnStartGameReceived(string sceneName)
+    {
+        EnterMultiplayerGame(sceneName);
+    }
+
+    private void EnterMultiplayerGame(string sceneName)
+    {
+        uiState = UiState.InGame;
+        lobbyStatus = string.Empty;
+        lobbyBusy = false;
+
+        if (!string.IsNullOrEmpty(sceneName) && Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            SceneManager.LoadScene(sceneName);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(multiplayerSceneName) && Application.CanStreamedLevelBeLoaded(multiplayerSceneName))
+        {
+            SceneManager.LoadScene(multiplayerSceneName);
+            return;
+        }
+
+        uiState = UiState.MultiplayerMenu;
+        lobbyStatus = "No se pudo cargar la escena de partida.";
+    }
+
+    private static string GenerateRoomCode(int length)
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        System.Text.StringBuilder b = new System.Text.StringBuilder(length);
+        for (int i = 0; i < length; i++)
+        {
+            b.Append(chars[UnityEngine.Random.Range(0, chars.Length)]);
+        }
+        return b.ToString();
     }
 
     [System.Serializable]

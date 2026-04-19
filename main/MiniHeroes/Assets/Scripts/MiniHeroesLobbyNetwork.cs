@@ -1,3 +1,29 @@
+#if UNITY_WEBGL && !UNITY_EDITOR
+using UnityEngine;
+
+public class MiniHeroesLobbyNetwork : MonoBehaviour
+{
+    [System.Serializable]
+    public class LobbyPlayerInfo
+    {
+        public int slot;
+        public string username;
+        public int level;
+        public int experience;
+        public int grunts_killed;
+    }
+
+    public bool IsServer => false;
+    public bool IsClient => false;
+    public string LastError { get; private set; } = "MiniHeroesLobbyNetwork no es compatible con WebGL (usa sockets TCP).";
+    public string HostAddressHint { get; private set; } = string.Empty;
+
+    public void StopAll() { }
+    public LobbyPlayerInfo GetPlayerInSlot(int slot) { return null; }
+    public bool StartHost(string username, int level, int experience, int gruntsKilled, int port) { return false; }
+    public bool StartClient(string address, string username, int level, int experience, int gruntsKilled, int port) { return false; }
+}
+#else
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -700,3 +726,4 @@ public class MiniHeroesLobbyNetwork : MonoBehaviour
         }
     }
 }
+#endif
