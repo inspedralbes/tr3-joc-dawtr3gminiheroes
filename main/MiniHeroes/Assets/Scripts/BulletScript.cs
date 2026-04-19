@@ -1,47 +1,98 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-
     public AudioClip Sound;
-    public float Speed;
-    private Rigidbody2D Rigidbody2D;
-    private Vector2 Direction;
+    public float Speed = 6f;
+    public float Lifetime = 4f;
+    public int Damage = 1;
 
-    void Start()
+    private Rigidbody2D body;
+    private Vector2 direction;
+    private DamageTeam ownerTeam = DamageTeam.Neutral;
+    private GameObject owner;
+
+    private void Start()
     {
-        Rigidbody2D = GetComponent<Rigidbody2D>();
-        Camera.main.GetComponent<AudioSource>().PlayOneShot(Sound);
+        body = GetComponent<Rigidbody2D>();
+        PlayShotSound();
+        Destroy(gameObject, Lifetime);
     }
 
     private void FixedUpdate()
     {
-        Rigidbody2D.linearVelocity = Direction * Speed;
+        if (body == null)
+        {
+            return;
+        }
+
+        body.linearVelocity = direction * Speed;
+    }
+
+    public void Configure(Vector2 travelDirection, DamageTeam team, GameObject ownerObject)
+    {
+        direction = travelDirection.normalized;
+        ownerTeam = team;
+        owner = ownerObject;
+    }
+
+    public void SetDirection(Vector2 travelDirection)
+    {
+        Configure(travelDirection, DamageTeam.Neutral, null);
     }
 
     public void DestroyBullet()
     {
         Destroy(gameObject);
     }
-    
-    public void SetDirection(Vector2 direction)
-    {
-        Direction = direction;
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        JohnMovement john = collision.GetComponent<JohnMovement>();
-        GruntScript grunt = collision.GetComponent<GruntScript>();
+        if (owner != null && collision.transform.root == owner.transform.root)
+        {
+            return;
+        }
 
-        if(john != null)
+        IDamageable damageable = collision.GetComponentInParent<IDamageable>();
+        if (damageable != null)
         {
-            john.Hit();
+            if (damageable.Team == ownerTeam)
+            {
+                return;
+            }
+
+            damageable.ReceiveDamage(Damage, owner, ownerTeam);
+            DestroyBullet();
+            return;
         }
-        if(grunt != null)
+
+        if (!collision.isTrigger)
         {
-            grunt.Hit();
+            DestroyBullet();
         }
-        DestroyBullet();
+    }
+
+    private void PlayShotSound()
+    {
+        if (Sound == null)
+        {
+            return;
+        }
+
+        AudioSource source = null;
+        if (Camera.main != null)
+        {
+            source = Camera.main.GetComponent<AudioSource>();
+        }
+
+        if (source == null)
+        {
+            source = Object.FindFirstObjectByType<AudioSource>();
+        }
+
+        if (source != null)
+        {
+            source.PlayOneShot(Sound);
+        }
     }
 }

@@ -43,3 +43,4 @@ Thumbs.db
 sysinfo.txt
 
 node_modules/
+.env

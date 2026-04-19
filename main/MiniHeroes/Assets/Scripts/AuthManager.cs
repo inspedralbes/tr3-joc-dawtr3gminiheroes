@@ -1,25 +1,53 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class AuthManager : MonoBehaviour
 {
-    private bool isLoggedIn = false;
-    private bool isLoginMode = true; // true = Login, false = Register
+    private static AuthManager instance;
 
-    private string username = "";
-    private string password = "";
-    private string message = "";
+    private enum UiState
+    {
+        Login,
+        ModeSelect,
+        MultiplayerMenu,
+        Lobby,
+        InGame
+    }
 
-    // URL del servidor Node.js
-    private string backendUrl = "http://localhost:3000/api/";
+    private bool isLoggedIn;
+    private bool isLoginMode = true;
+    private UiState uiState = UiState.Login;
 
-    [Header("Configuración de Escenas")]
-    [Tooltip("Escribe el nombre de la escena del juego (ej: 'SampleScene'). Si lo dejas vacío, simplemente se ocultará el login y reanudará el juego actual.")]
-    public string sceneToLoadAfterLogin = "";
+    private string username = string.Empty;
+    private string password = string.Empty;
+    private string message = string.Empty;
 
-    // Clases para serializar/deserializar JSON nativamente en Unity
+    private readonly string backendUrl = "http://localhost:3000/api/";
+
+    [Header("Scene Configuration")]
+    [Tooltip("Scene loaded after a successful login. Leave empty to stay on the current scene.")]
+    public string sceneToLoadAfterLogin = string.Empty;
+
+    [Header("Game Mode")]
+    [Tooltip("Scene loaded when selecting Solo mode.")]
+    public string soloSceneName = "SampleScene";
+
+    [Header("Multiplayer Lobby")]
+    public int lobbyPort = 7777;
+    public string defaultJoinAddress = "127.0.0.1";
+
+    private string joinAddress;
+    private string lobbyStatus = string.Empty;
+    private bool lobbyBusy;
+    private MiniHeroesLobbyNetwork lobbyNetwork;
+    private Camera menuCamera;
+
+    private int cachedLevel = 1;
+    private int cachedExperience;
+    private int cachedGruntsKilled;
+
     [System.Serializable]
     private class AuthData
     {
@@ -35,54 +63,135 @@ public class AuthManager : MonoBehaviour
         public string username;
     }
 
-    void Start()
+    private void Awake()
     {
-        // Comprobar si ya existe una sesión guardada localmente
-        if (PlayerPrefs.HasKey("session_token"))
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
+
+    private void Start()
+    {
+        if (MiniHeroesRuntimeMode.IsTraining)
         {
             isLoggedIn = true;
-            Time.timeScale = 1; // Asegurarnos de que el tiempo corra
+            Time.timeScale = 1f;
             if (!string.IsNullOrEmpty(sceneToLoadAfterLogin))
             {
                 SceneManager.LoadScene(sceneToLoadAfterLogin);
             }
+            return;
+        }
+
+        if (PlayerPrefs.HasKey("session_token"))
+        {
+            isLoggedIn = true;
+            Time.timeScale = 0f;
+            uiState = UiState.ModeSelect;
         }
         else
         {
-            Time.timeScale = 0; // Pausar todo mientras esperamos
+            Time.timeScale = 0f;
+            uiState = UiState.Login;
         }
+
+        joinAddress = string.IsNullOrWhiteSpace(defaultJoinAddress) ? "127.0.0.1" : defaultJoinAddress;
+        lobbyNetwork = GetComponent<MiniHeroesLobbyNetwork>();
+        if (lobbyNetwork == null)
+        {
+            lobbyNetwork = gameObject.AddComponent<MiniHeroesLobbyNetwork>();
+        }
+
+        EnsureMenuCamera();
     }
 
-    void OnGUI()
+    public static bool Exists()
     {
-        // Si ya ha iniciado sesión, no dibujar esta ventana
-        if (isLoggedIn) return;
+        return instance != null;
+    }
+
+    public static void Logout()
+    {
+        if (instance == null)
+        {
+            PlayerPrefs.DeleteKey("session_token");
+            PlayerPrefs.Save();
+            return;
+        }
+
+        instance.isLoggedIn = false;
+        instance.isLoginMode = true;
+        instance.uiState = UiState.Login;
+        instance.password = string.Empty;
+        instance.message = string.Empty;
+        instance.lobbyStatus = string.Empty;
+        instance.lobbyBusy = false;
+        if (instance.lobbyNetwork != null)
+        {
+            instance.lobbyNetwork.StopAll();
+        }
+        PlayerPrefs.DeleteKey("session_token");
+        PlayerPrefs.Save();
+        Time.timeScale = 0f;
+    }
+
+    private void OnGUI()
+    {
+        if (MiniHeroesRuntimeMode.IsTraining)
+        {
+            return;
+        }
+
+        EnsureMenuCamera();
+
+        if (isLoggedIn)
+        {
+            if (uiState == UiState.InGame)
+            {
+                Time.timeScale = 1f;
+                CleanupMenuCamera();
+                return;
+            }
+
+            Time.timeScale = 0f;
+            DrawLoggedInUi();
+            return;
+        }
 
         int width = 450;
         int height = 350;
-        float x = (Screen.width - width) / 2;
-        float y = (Screen.height - height) / 2;
+        float x = (Screen.width - width) / 2f;
+        float y = (Screen.height - height) / 2f;
 
-        // ==== ESTILOS TIPO JUNGLA ====
-        
-        // Primero dibujamos un fondo para que sea una pantalla "A parte" completa si así se desea
-        GUI.backgroundColor = new Color(0.05f, 0.15f, 0.05f); // Fondo verde muy, muy oscuro casi negro
-        GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
-        
-        // Color general de fondo para cajas y botones oscuros (Verde Jungla Oscuro)
+        GUI.backgroundColor = Color.black;
+        GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty);
+
         GUI.backgroundColor = new Color(0.1f, 0.25f, 0.1f);
-        
+
         GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
         boxStyle.fontSize = 24;
         boxStyle.fontStyle = FontStyle.Bold;
-        boxStyle.normal.textColor = new Color(0.9f, 0.95f, 0.6f); // Amarillo suave
-
-        GUI.Box(new Rect(x, y, width, height), isLoginMode ? " CAMPAMENTO BASE " : " ALISTAMIENTO ", boxStyle);
+        boxStyle.normal.textColor = new Color(0.9f, 0.95f, 0.6f);
+        GUI.Box(new Rect(x, y, width, height), isLoginMode ? " BASE CAMP " : " RECRUITMENT ", boxStyle);
 
         GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
         labelStyle.fontSize = 18;
         labelStyle.fontStyle = FontStyle.Bold;
-        labelStyle.normal.textColor = new Color(0.7f, 1f, 0.7f); // Verde claro
+        labelStyle.normal.textColor = new Color(0.7f, 1f, 0.7f);
 
         GUIStyle textFieldStyle = new GUIStyle(GUI.skin.textField);
         textFieldStyle.fontSize = 20;
@@ -98,16 +207,14 @@ public class AuthManager : MonoBehaviour
 
         float padding = 40f;
 
-        // Campos de texto y etiquetas
-        GUI.Label(new Rect(x + padding, y + 80, 150, 30), "Usuario:", labelStyle);
-        username = GUI.TextField(new Rect(x + 160, y + 80, width - 200, 35), username, textFieldStyle);
+        GUI.Label(new Rect(x + padding, y + 80f, 150f, 30f), "User:", labelStyle);
+        username = GUI.TextField(new Rect(x + 160f, y + 80f, width - 200f, 35f), username, textFieldStyle);
 
-        GUI.Label(new Rect(x + padding, y + 140, 150, 30), "Contraseña:", labelStyle);
-        password = GUI.PasswordField(new Rect(x + 160, y + 140, width - 200, 35), password, '*', textFieldStyle);
+        GUI.Label(new Rect(x + padding, y + 140f, 150f, 30f), "Password:", labelStyle);
+        password = GUI.PasswordField(new Rect(x + 160f, y + 140f, width - 200f, 35f), password, '*', textFieldStyle);
 
-        // Botón principal
-        GUI.backgroundColor = new Color(0.2f, 0.6f, 0.2f); // Verde hoja tropical
-        if (GUI.Button(new Rect(x + padding, y + 210, width - (padding * 2), 45), isLoginMode ? "Entrar a la Jungla" : "Crear Explorador", primaryButtonStyle))
+        GUI.backgroundColor = new Color(0.2f, 0.6f, 0.2f);
+        if (GUI.Button(new Rect(x + padding, y + 210f, width - (padding * 2f), 45f), isLoginMode ? "Enter Jungle" : "Create Explorer", primaryButtonStyle))
         {
             if (isLoginMode)
             {
@@ -119,35 +226,404 @@ public class AuthManager : MonoBehaviour
             }
         }
 
-        // Botón secundario
-        GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f); // Marrón madera
-        if (GUI.Button(new Rect(x + padding, y + 265, width - (padding * 2), 35), isLoginMode ? "¿No tienes cuenta? Fírmate como aventurero" : "¿Ya eres explorador? Ingresa al campamento", switchButtonStyle))
+        GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
+        if (GUI.Button(new Rect(x + padding, y + 265f, width - (padding * 2f), 35f), isLoginMode ? "Need an account?" : "Already registered?", switchButtonStyle))
         {
             isLoginMode = !isLoginMode;
-            message = "";
+            message = string.Empty;
         }
 
-        // Mensajes
         GUIStyle msgStyle = new GUIStyle(GUI.skin.label);
         msgStyle.fontSize = 16;
         msgStyle.alignment = TextAnchor.MiddleCenter;
         msgStyle.normal.textColor = Color.white;
-        
-        GUI.Label(new Rect(x, y + 310, width, 30), message, msgStyle);
+        GUI.Label(new Rect(x, y + 310f, width, 30f), message, msgStyle);
 
-        // Reset
         GUI.backgroundColor = Color.white;
     }
 
-    IEnumerator LoginRoutine(string user, string pass)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        message = "Conectando al servidor...";
-        
-        AuthData data = new AuthData();
-        data.username = user;
-        data.password = pass;
-        string jsonData = JsonUtility.ToJson(data);
+        EnsureMenuCamera();
+    }
 
+    private void EnsureMenuCamera()
+    {
+        if (MiniHeroesRuntimeMode.IsTraining)
+        {
+            return;
+        }
+
+        if (isLoggedIn && uiState == UiState.InGame)
+        {
+            CleanupMenuCamera();
+            return;
+        }
+
+        if (HasAnyEnabledCamera())
+        {
+            return;
+        }
+
+        if (menuCamera != null)
+        {
+            menuCamera.enabled = true;
+            menuCamera.clearFlags = CameraClearFlags.SolidColor;
+            menuCamera.backgroundColor = Color.black;
+            return;
+        }
+
+        GameObject cameraObject = new GameObject("MenuCamera");
+        menuCamera = cameraObject.AddComponent<Camera>();
+        cameraObject.tag = "MainCamera";
+        menuCamera.orthographic = true;
+        menuCamera.clearFlags = CameraClearFlags.SolidColor;
+        menuCamera.backgroundColor = Color.black;
+        menuCamera.depth = -100f;
+        DontDestroyOnLoad(cameraObject);
+    }
+
+    private void CleanupMenuCamera()
+    {
+        if (menuCamera == null)
+        {
+            return;
+        }
+
+        Destroy(menuCamera.gameObject);
+        menuCamera = null;
+    }
+
+    private static bool HasAnyEnabledCamera()
+    {
+        Camera[] cameras = Camera.allCameras;
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            if (cameras[i] != null && cameras[i].enabled && cameras[i].gameObject.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void DrawLoggedInUi()
+    {
+        int width = 520;
+        int height = 360;
+        float x = (Screen.width - width) / 2f;
+        float y = (Screen.height - height) / 2f;
+
+        GUI.backgroundColor = Color.black;
+        GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty);
+        GUI.backgroundColor = new Color(0.1f, 0.25f, 0.1f);
+
+        GUIStyle boxStyle = new GUIStyle(GUI.skin.box)
+        {
+            fontSize = 24,
+            fontStyle = FontStyle.Bold
+        };
+        boxStyle.normal.textColor = new Color(0.9f, 0.95f, 0.6f);
+
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 20,
+            fontStyle = FontStyle.Bold
+        };
+        buttonStyle.normal.textColor = new Color(0.95f, 1f, 0.8f);
+
+        GUIStyle smallButtonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 15
+        };
+
+        GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            alignment = TextAnchor.MiddleCenter
+        };
+        labelStyle.normal.textColor = Color.white;
+
+        float padding = 40f;
+
+        switch (uiState)
+        {
+            case UiState.ModeSelect:
+            {
+                GUI.Box(new Rect(x, y, width, height), " MODO DE JUEGO ", boxStyle);
+
+                GUI.backgroundColor = new Color(0.2f, 0.6f, 0.2f);
+                if (GUI.Button(new Rect(x + padding, y + 110f, width - (padding * 2f), 55f), "1. Solo", buttonStyle))
+                {
+                    GoToSolo();
+                }
+
+                GUI.backgroundColor = new Color(0.2f, 0.45f, 0.6f);
+                if (GUI.Button(new Rect(x + padding, y + 185f, width - (padding * 2f), 55f), "2. Multijugador", buttonStyle))
+                {
+                    uiState = UiState.MultiplayerMenu;
+                    lobbyStatus = string.Empty;
+                }
+
+                GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
+                if (GUI.Button(new Rect(x + padding, y + 265f, width - (padding * 2f), 40f), "Cerrar sesion", smallButtonStyle))
+                {
+                    Logout();
+                    if (Application.CanStreamedLevelBeLoaded("LoginScene"))
+                    {
+                        SceneManager.LoadScene("LoginScene");
+                    }
+                }
+
+                GUI.backgroundColor = Color.white;
+                break;
+            }
+            case UiState.MultiplayerMenu:
+            {
+                GUI.Box(new Rect(x, y, width, height), " MULTIJUGADOR ", boxStyle);
+
+                GUI.Label(new Rect(x + padding, y + 90f, width - (padding * 2f), 25f), "IP para unirse:", labelStyle);
+                joinAddress = GUI.TextField(new Rect(x + padding, y + 120f, width - (padding * 2f), 35f), joinAddress);
+
+                GUI.backgroundColor = new Color(0.2f, 0.6f, 0.2f);
+                GUI.enabled = !lobbyBusy;
+                if (GUI.Button(new Rect(x + padding, y + 170f, width - (padding * 2f), 50f), "Crear Sala", buttonStyle))
+                {
+                    lobbyStatus = string.Empty;
+                    StartCoroutine(BeginHostRoutine());
+                }
+
+                GUI.backgroundColor = new Color(0.2f, 0.45f, 0.6f);
+                if (GUI.Button(new Rect(x + padding, y + 235f, width - (padding * 2f), 50f), "Unirse a Sala", buttonStyle))
+                {
+                    lobbyStatus = string.Empty;
+                    StartCoroutine(BeginJoinRoutine());
+                }
+                GUI.enabled = true;
+
+                GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
+                if (GUI.Button(new Rect(x + padding, y + 300f, (width - (padding * 2f)) / 2f - 10f, 35f), "Atras", smallButtonStyle))
+                {
+                    uiState = UiState.ModeSelect;
+                    lobbyStatus = string.Empty;
+                    lobbyBusy = false;
+                    if (lobbyNetwork != null)
+                    {
+                        lobbyNetwork.StopAll();
+                    }
+                }
+
+                if (GUI.Button(new Rect(x + padding + (width - (padding * 2f)) / 2f + 10f, y + 300f, (width - (padding * 2f)) / 2f - 10f, 35f), "Cerrar sesion", smallButtonStyle))
+                {
+                    Logout();
+                    if (Application.CanStreamedLevelBeLoaded("LoginScene"))
+                    {
+                        SceneManager.LoadScene("LoginScene");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(lobbyStatus))
+                {
+                    GUI.Label(new Rect(x + padding, y + 335f, width - (padding * 2f), 20f), lobbyStatus, labelStyle);
+                }
+
+                GUI.backgroundColor = Color.white;
+                break;
+            }
+            case UiState.Lobby:
+            {
+                GUI.Box(new Rect(x, y, width, height), " LOBBY ", boxStyle);
+
+                string header = (lobbyNetwork != null && lobbyNetwork.IsServer)
+                    ? "Sala creada. Comparte tu IP local y el puerto " + lobbyPort
+                    : "Conectado al lobby.";
+
+                GUI.Label(new Rect(x + padding, y + 75f, width - (padding * 2f), 20f), header, labelStyle);
+
+                if (lobbyNetwork != null && lobbyNetwork.IsServer && !string.IsNullOrEmpty(lobbyNetwork.HostAddressHint))
+                {
+                    GUI.Label(new Rect(x + padding, y + 95f, width - (padding * 2f), 20f), "IP sugerida: " + lobbyNetwork.HostAddressHint + ":" + lobbyPort, labelStyle);
+                }
+
+                DrawLobbySlots(new Rect(x + padding, y + 125f, width - (padding * 2f), 170f));
+
+                if (!string.IsNullOrEmpty(lobbyStatus))
+                {
+                    GUI.Label(new Rect(x + padding, y + 295f, width - (padding * 2f), 20f), lobbyStatus, labelStyle);
+                }
+
+                GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
+                if (GUI.Button(new Rect(x + padding, y + 320f, width - (padding * 2f), 35f), "Salir del Lobby", smallButtonStyle))
+                {
+                    lobbyStatus = string.Empty;
+                    lobbyBusy = false;
+                    if (lobbyNetwork != null)
+                    {
+                        lobbyNetwork.StopAll();
+                    }
+                    uiState = UiState.MultiplayerMenu;
+                }
+
+                GUI.backgroundColor = Color.white;
+                break;
+            }
+        }
+    }
+
+    private void DrawLobbySlots(Rect rect)
+    {
+        GUIStyle slotStyle = new GUIStyle(GUI.skin.box);
+        slotStyle.fontSize = 14;
+        slotStyle.normal.textColor = Color.white;
+
+        int maxSlots = 4;
+        float slotHeight = 40f;
+        float gap = 8f;
+
+        for (int i = 0; i < maxSlots; i++)
+        {
+            float y = rect.y + i * (slotHeight + gap);
+            Rect slotRect = new Rect(rect.x, y, rect.width, slotHeight);
+            string text = "Slot " + (i + 1) + ": (vacio)";
+
+            if (lobbyNetwork != null)
+            {
+                MiniHeroesLobbyNetwork.LobbyPlayerInfo player = lobbyNetwork.GetPlayerInSlot(i + 1);
+                if (player != null)
+                {
+                    text = "Slot " + player.slot + ": " + player.username + " | Nivel " + player.level + " | XP " + player.experience + " | Kills " + player.grunts_killed;
+                }
+            }
+
+            GUI.Box(slotRect, text, slotStyle);
+        }
+    }
+
+    private void GoToSolo()
+    {
+        uiState = UiState.InGame;
+        lobbyStatus = string.Empty;
+        lobbyBusy = false;
+        if (lobbyNetwork != null)
+        {
+            lobbyNetwork.StopAll();
+        }
+
+        if (!string.IsNullOrEmpty(soloSceneName) && Application.CanStreamedLevelBeLoaded(soloSceneName))
+        {
+            SceneManager.LoadScene(soloSceneName);
+        }
+        else if (Application.CanStreamedLevelBeLoaded("SampleScene"))
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+        else
+        {
+            uiState = UiState.ModeSelect;
+            lobbyStatus = "No se pudo cargar la escena de juego.";
+        }
+    }
+
+    private IEnumerator BeginHostRoutine()
+    {
+        lobbyBusy = true;
+        lobbyStatus = "Cargando stats...";
+        yield return LoadLocalStatsRoutine();
+
+        string displayName = PlayerPrefs.GetString("username", "Player");
+        lobbyNetwork.StopAll();
+        bool ok = lobbyNetwork.StartHost(displayName, cachedLevel, cachedExperience, cachedGruntsKilled, lobbyPort);
+        lobbyBusy = false;
+
+        if (!ok)
+        {
+            lobbyStatus = string.IsNullOrEmpty(lobbyNetwork.LastError) ? "No se pudo crear la sala." : lobbyNetwork.LastError;
+            uiState = UiState.MultiplayerMenu;
+            yield break;
+        }
+
+        lobbyStatus = string.Empty;
+        uiState = UiState.Lobby;
+    }
+
+    private IEnumerator BeginJoinRoutine()
+    {
+        lobbyBusy = true;
+        lobbyStatus = "Cargando stats...";
+        yield return LoadLocalStatsRoutine();
+
+        string address = string.IsNullOrWhiteSpace(joinAddress) ? "127.0.0.1" : joinAddress.Trim();
+        string displayName = PlayerPrefs.GetString("username", "Player");
+
+        lobbyNetwork.StopAll();
+        bool ok = lobbyNetwork.StartClient(address, displayName, cachedLevel, cachedExperience, cachedGruntsKilled, lobbyPort);
+        lobbyBusy = false;
+
+        if (!ok)
+        {
+            lobbyStatus = string.IsNullOrEmpty(lobbyNetwork.LastError) ? "No se pudo unir a la sala." : lobbyNetwork.LastError;
+            uiState = UiState.MultiplayerMenu;
+            yield break;
+        }
+
+        lobbyStatus = string.Empty;
+        uiState = UiState.Lobby;
+    }
+
+    private IEnumerator LoadLocalStatsRoutine()
+    {
+        cachedLevel = 1;
+        cachedExperience = 0;
+        cachedGruntsKilled = 0;
+
+        if (!PlayerPrefs.HasKey("session_token"))
+        {
+            yield break;
+        }
+
+        UnityWebRequest request = UnityWebRequest.Get(backendUrl + "stats");
+        request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("session_token"));
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            yield break;
+        }
+
+        LobbyStatsData stats = JsonUtility.FromJson<LobbyStatsData>(request.downloadHandler.text);
+        if (stats == null)
+        {
+            yield break;
+        }
+
+        cachedExperience = stats.experience;
+        cachedGruntsKilled = stats.grunts_killed;
+        if (stats.level > 0)
+        {
+            cachedLevel = stats.level;
+        }
+    }
+
+    [System.Serializable]
+    private class LobbyStatsData
+    {
+        public int experience;
+        public int grunts_killed;
+        public int level;
+    }
+
+    private IEnumerator LoginRoutine(string user, string pass)
+    {
+        message = "Connecting...";
+
+        AuthData data = new AuthData
+        {
+            username = user,
+            password = pass
+        };
+
+        string jsonData = JsonUtility.ToJson(data);
         UnityWebRequest request = new UnityWebRequest(backendUrl + "login", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -156,46 +632,47 @@ public class AuthManager : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        if (request.result == UnityWebRequest.Result.Success)
+        if (request.result != UnityWebRequest.Result.Success)
         {
-            LoginResponse resData = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
-            
-            if (resData != null && !string.IsNullOrEmpty(resData.token))
-            {
-                PlayerPrefs.SetString("session_token", resData.token);
-                PlayerPrefs.Save();
-                
-                message = "¡Login exitoso! Entrando a la Jungla...";
-                yield return new WaitForSecondsRealtime(0.5f);
-                
-                isLoggedIn = true;
-                Time.timeScale = 1; // Volver a reanudar el tiempo
-                
-                if (!string.IsNullOrEmpty(sceneToLoadAfterLogin))
-                {
-                    SceneManager.LoadScene(sceneToLoadAfterLogin);
-                }
-            }
-            else
-            {
-                message = "Error leyendo el token de la sesión.";
-            }
+            message = "Invalid credentials.";
+            yield break;
         }
-        else
+
+        LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
+        if (response == null || string.IsNullOrEmpty(response.token))
         {
-            message = "Error: Credenciales inválidas.";
+            message = "Session token missing.";
+            yield break;
         }
+
+        PlayerPrefs.SetString("session_token", response.token);
+        if (!string.IsNullOrEmpty(response.username))
+        {
+            PlayerPrefs.SetString("username", response.username);
+        }
+        PlayerPrefs.Save();
+
+        message = "Login successful.";
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        isLoggedIn = true;
+        Time.timeScale = 0f;
+        uiState = UiState.ModeSelect;
+
+        message = string.Empty;
     }
 
-    IEnumerator RegisterRoutine(string user, string pass)
+    private IEnumerator RegisterRoutine(string user, string pass)
     {
-        message = "Creando cuenta...";
-        
-        AuthData data = new AuthData();
-        data.username = user;
-        data.password = pass;
+        message = "Creating account...";
+
+        AuthData data = new AuthData
+        {
+            username = user,
+            password = pass
+        };
+
         string jsonData = JsonUtility.ToJson(data);
-        
         UnityWebRequest request = new UnityWebRequest(backendUrl + "register", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -206,12 +683,12 @@ public class AuthManager : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            message = "Cuenta creada. Ahora puedes iniciar sesión.";
-            isLoginMode = true; // Volver a la pantalla de login
+            message = "Account created. You can log in now.";
+            isLoginMode = true;
         }
         else
         {
-            message = "Error: " + request.error + " (Quizás el usuario ya existe).";
+            message = "Register failed: " + request.error;
         }
     }
 }
