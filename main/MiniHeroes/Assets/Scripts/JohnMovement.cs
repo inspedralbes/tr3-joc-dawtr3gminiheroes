@@ -1,31 +1,48 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
-public class JohnMovement : MonoBehaviour
+public class JohnMovement : MonoBehaviour, IDamageable
 {
     public GameObject Bullet;
-    public float Speed;
-    public float JumpForce;
+    public float Speed = 4f;
+    public float JumpForce = 150f;
+    public float GroundCheckDistance = 0.18f;
+    public float CoyoteTime = 0.12f;
+    public float JumpBufferTime = 0.12f;
+    public LayerMask GroundMask = ~0;
 
-    private Rigidbody2D Rigidbody2D;
-    private Animator Animator;
-    private float Horizontal;
-    private bool Grounded;
-    private float LastShoot;
-    private int MaxHealth = 10;
-    private int Health = 10;
-    private bool isDead = false;
-    private bool showStatsMenu = false;
-    private int Experience = 0;
-    private int MaxExperience = 20;
-    private int GruntsKilled = 0;
-    private int Level = 1;
-    private int StatPoints = 0;
-    private int Attack = 1;
+    private Rigidbody2D body;
+    private CapsuleCollider2D capsuleCollider;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private float horizontal;
+    private bool grounded;
+    private float lastShootTime;
+    private float lastGroundedTime = -10f;
+    private float lastJumpPressedTime = -10f;
+    private int maxHealth = 10;
+    private int health = 10;
+    private bool isDead;
+    private bool showStatsMenu;
+    private bool showPostDeathMenu;
+    private int experience;
+    private int maxExperience = 20;
+    private int gruntsKilled;
+    private int level = 1;
+    private Vector3 spawnPoint;
+    private bool useExternalControl;
+    private float externalHorizontal;
+    private bool externalJumpRequested;
+    private bool externalShootRequested;
 
-    private string backendUrl = "http://localhost:3000/api/";
+    
+
+    private readonly string backendUrl = "https://backend-miniheroes.onrender.com/api/";
+
+    public DamageTeam Team => DamageTeam.Player;
+    public bool IsDead => isDead;
 
     [System.Serializable]
     private class StatsData
@@ -38,68 +55,328 @@ public class JohnMovement : MonoBehaviour
         public int max_health;
         public int attack;
     }
-    
-    void Start()
+
+    private void Start()
     {
-        Rigidbody2D = GetComponent<Rigidbody2D>();
-        Animator = GetComponent<Animator>();
+        body = GetComponent<Rigidbody2D>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spawnPoint = transform.position;
 
         CalculateMaxExperience();
+        EnsureGameplaySystems();
 
-        // Cargar estadísticas desde la BBDD si hay cuenta iniciada
-        if (PlayerPrefs.HasKey("session_token"))
+        if (!MiniHeroesRuntimeMode.IsTraining && PlayerPrefs.HasKey("session_token"))
         {
             StartCoroutine(LoadStatsRoutine());
         }
     }
 
-    private void CalculateMaxExperience()
+    private void Update()
     {
-        MaxExperience = 20;
-        for (int i = 1; i < Level; i++)
+        if (isDead || Time.timeScale == 0f)
         {
-            MaxExperience = Mathf.FloorToInt(MaxExperience * 1.5f);
+            return;
+        }
+
+        if (!MiniHeroesRuntimeMode.IsTraining && Input.GetKeyDown(KeyCode.M))
+        {
+            showStatsMenu = !showStatsMenu;
+        }
+
+        if (MiniHeroesRuntimeMode.IsTraining && useExternalControl)
+        {
+            horizontal = externalHorizontal;
+        }
+        else
+        {
+            horizontal = Input.GetAxisRaw("Horizontal");
+        }
+
+        if (horizontal < 0f)
+        {
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+        else if (horizontal > 0f)
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("running", Mathf.Abs(horizontal) > 0.01f);
+        }
+
+        grounded = CheckGrounded();
+        if (grounded)
+        {
+            lastGroundedTime = Time.time;
+        }
+
+        bool jumpRequested = MiniHeroesRuntimeMode.IsTraining && useExternalControl
+            ? externalJumpRequested
+            : Input.GetKeyDown(KeyCode.W);
+        if (jumpRequested)
+        {
+            lastJumpPressedTime = Time.time;
+        }
+
+        if (CanUseBufferedJump())
+        {
+            Jump();
+        }
+
+        bool shootRequested = MiniHeroesRuntimeMode.IsTraining && useExternalControl ? externalShootRequested : Input.GetKeyDown(KeyCode.Space);
+        if (shootRequested && Time.time > lastShootTime + 0.25f)
+        {
+            Shoot();
+            lastShootTime = Time.time;
+        }
+
+        externalJumpRequested = false;
+        externalShootRequested = false;
+    }
+
+    private void FixedUpdate()
+    {
+        if (isDead || body == null)
+        {
+            return;
+        }
+
+        body.linearVelocity = new Vector2(horizontal * Speed, body.linearVelocity.y);
+    }
+
+    public void AddExperience(int amount)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        experience += amount;
+        gruntsKilled += 1;
+
+        while (experience >= maxExperience)
+        {
+            experience -= maxExperience;
+            level += 1;
+            CalculateMaxExperience();
+        }
+
+        if (!MiniHeroesRuntimeMode.IsTraining)
+        {
+            StartCoroutine(SaveStatsRoutine());
         }
     }
 
-    IEnumerator LoadStatsRoutine()
+    public void ReceiveDamage(int amount, GameObject source, DamageTeam sourceTeam)
+    {
+        if (isDead || sourceTeam == Team)
+        {
+            return;
+        }
+
+        health -= amount;
+        if (source != null)
+        {
+            GruntScript grunt = source.GetComponentInParent<GruntScript>();
+            if (grunt != null)
+            {
+                grunt.NotifySuccessfulAttack();
+            }
+        }
+
+        if (health > 0)
+        {
+            return;
+        }
+
+        if (MiniHeroesRuntimeMode.IsTraining)
+        {
+            Object.FindFirstObjectByType<MiniHeroesTrainingManager>()?.HandlePlayerDeath();
+            return;
+        }
+
+        isDead = true;
+        showPostDeathMenu = false;
+        Time.timeScale = 0f;
+    }
+
+    public void Hit()
+    {
+        ReceiveDamage(1, null, DamageTeam.Enemy);
+    }
+
+    public void SetExternalControlState(float moveInput, bool jumpRequested, bool shootRequested)
+    {
+        useExternalControl = true;
+        externalHorizontal = Mathf.Clamp(moveInput, -1f, 1f);
+        externalJumpRequested |= jumpRequested;
+        externalShootRequested |= shootRequested;
+    }
+
+    public void ResetForTraining()
+    {
+        health = maxHealth;
+        isDead = false;
+        transform.position = spawnPoint;
+        horizontal = 0f;
+        externalHorizontal = 0f;
+        externalJumpRequested = false;
+        externalShootRequested = false;
+        lastGroundedTime = Time.time;
+        lastJumpPressedTime = -10f;
+        showPostDeathMenu = false;
+
+        if (body != null)
+        {
+            body.linearVelocity = Vector2.zero;
+        }
+    }
+
+    private void Jump()
+    {
+        if (body == null)
+        {
+            return;
+        }
+
+        lastJumpPressedTime = -10f;
+        lastGroundedTime = -10f;
+        body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
+        body.AddForce(Vector2.up * JumpForce);
+    }
+
+    private void Shoot()
+    {
+        if (Bullet == null)
+        {
+            return;
+        }
+
+        Vector3 direction = transform.localScale.x >= 0f ? Vector3.right : Vector3.left;
+        GameObject bullet = Instantiate(Bullet, transform.position + direction * 0.18f, Quaternion.identity);
+        BulletScript bulletScript = bullet.GetComponent<BulletScript>();
+        if (bulletScript != null)
+        {
+            bulletScript.Configure(direction, DamageTeam.Player, gameObject);
+        }
+    }
+
+    private bool CheckGrounded()
+    {
+        if (capsuleCollider == null)
+        {
+            return Physics2D.OverlapCircle(transform.position + Vector3.down * (GroundCheckDistance * 0.5f), GroundCheckDistance, GroundMask) != null;
+        }
+
+        Bounds bounds = capsuleCollider.bounds;
+        Vector2 checkCenter = new Vector2(bounds.center.x, bounds.min.y - (GroundCheckDistance * 0.5f));
+        Vector2 checkSize = new Vector2(bounds.size.x * 0.85f, GroundCheckDistance);
+        Collider2D hit = Physics2D.OverlapBox(checkCenter, checkSize, 0f, GroundMask);
+        return hit != null && hit.gameObject != gameObject;
+    }
+
+    private bool CanUseBufferedJump()
+    {
+        if (Time.time > lastJumpPressedTime + JumpBufferTime)
+        {
+            return false;
+        }
+
+        return grounded || Time.time <= lastGroundedTime + CoyoteTime;
+    }
+
+    private void EnsureGameplaySystems()
+    {
+        if (MiniHeroesRuntimeMode.IsTraining)
+        {
+            MiniHeroesTrainingManager trainingManager = Object.FindFirstObjectByType<MiniHeroesTrainingManager>();
+            if (trainingManager == null)
+            {
+                GameObject trainingObject = new GameObject("MiniHeroesTrainingManager");
+                trainingObject.AddComponent<MiniHeroesTrainingManager>();
+            }
+        }
+        else
+        {
+            MiniHeroesInferenceBootstrap inferenceBootstrap = Object.FindFirstObjectByType<MiniHeroesInferenceBootstrap>();
+            if (inferenceBootstrap == null)
+            {
+                GameObject inferenceObject = new GameObject("MiniHeroesInferenceBootstrap");
+                inferenceObject.AddComponent<MiniHeroesInferenceBootstrap>();
+            }
+        }
+
+        RuntimeLevelExtender levelExtender = Object.FindFirstObjectByType<RuntimeLevelExtender>();
+        if (levelExtender == null)
+        {
+            GameObject extenderObject = new GameObject("RuntimeLevelExtender");
+            levelExtender = extenderObject.AddComponent<RuntimeLevelExtender>();
+        }
+        levelExtender.Configure(gameObject);
+
+        EnemyRespawnManager respawnManager = Object.FindFirstObjectByType<EnemyRespawnManager>();
+        if (respawnManager == null)
+        {
+            GameObject respawnObject = new GameObject("EnemyRespawnManager");
+            respawnManager = respawnObject.AddComponent<EnemyRespawnManager>();
+        }
+        respawnManager.Configure(gameObject, levelExtender);
+    }
+
+    private void CalculateMaxExperience()
+    {
+        maxExperience = 20;
+        for (int i = 1; i < level; i++)
+        {
+            maxExperience = Mathf.FloorToInt(maxExperience * 1.5f);
+        }
+    }
+
+    private IEnumerator LoadStatsRoutine()
     {
         UnityWebRequest request = UnityWebRequest.Get(backendUrl + "stats");
         request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("session_token"));
         yield return request.SendWebRequest();
 
-        if (request.result == UnityWebRequest.Result.Success)
+        if (request.result != UnityWebRequest.Result.Success)
         {
-            StatsData stats = JsonUtility.FromJson<StatsData>(request.downloadHandler.text);
-            if (stats != null)
-            {
-                Experience = stats.experience;
-                GruntsKilled = stats.grunts_killed;
-                if (stats.level > 0) Level = stats.level;
-                StatPoints = stats.stat_points;
-                if (stats.speed > 0) Speed = stats.speed;
-                if (stats.max_health > 0) MaxHealth = stats.max_health;
-                if (stats.attack > 0) Attack = stats.attack;
-                Health = MaxHealth; // Rellenamos la vida
-                CalculateMaxExperience();
-            }
+            yield break;
         }
+
+        StatsData stats = JsonUtility.FromJson<StatsData>(request.downloadHandler.text);
+        if (stats == null)
+        {
+            yield break;
+        }
+
+        experience = stats.experience;
+        gruntsKilled = stats.grunts_killed;
+        if (stats.level > 0)
+        {
+            level = stats.level;
+        }
+        CalculateMaxExperience();
     }
 
-    IEnumerator SaveStatsRoutine()
+    private IEnumerator SaveStatsRoutine()
     {
-        if (!PlayerPrefs.HasKey("session_token")) yield break;
+        if (!PlayerPrefs.HasKey("session_token"))
+        {
+            yield break;
+        }
 
-        StatsData data = new StatsData();
-        data.experience = Experience;
-        data.grunts_killed = GruntsKilled;
-        data.level = Level;
-        data.stat_points = StatPoints;
-        data.speed = Speed;
-        data.max_health = MaxHealth;
-        data.attack = Attack;
+        StatsData data = new StatsData
+        {
+            experience = experience,
+            grunts_killed = gruntsKilled,
+            level = level
+        };
+
         string json = JsonUtility.ToJson(data);
-
         UnityWebRequest request = new UnityWebRequest(backendUrl + "stats", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -110,300 +387,284 @@ public class JohnMovement : MonoBehaviour
         yield return request.SendWebRequest();
     }
 
-    void Update()
-    {
-        if (isDead || Time.timeScale == 0) return;
-
-        // Abrir / Cerrar menú de estadísticas con la tecla M
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            showStatsMenu = !showStatsMenu;
-        }
-
-        Horizontal = Input.GetAxis("Horizontal");
-
-        if(Horizontal < 0.0f) transform.localScale = new Vector3(-1, 1, 1);
-        else if(Horizontal > 0.0f) transform.localScale = new Vector3(1, 1, 1);
-
-        Animator.SetBool("running", Horizontal != 0.0f);
-
-        Debug.DrawRay(transform.position, Vector3.down, Color.red);
-
-        if(Physics2D.Raycast(transform.position, Vector3.down, 0.1f))
-        {
-            Grounded = true;
-        }
-        else
-        {
-            Grounded = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.W) && Grounded)
-        {
-            Jump();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > LastShoot + 0.25f)
-        {
-            Shoot();
-            LastShoot = Time.time;
-        }
-        
-    }
-
-    private void Jump()
-    {
-        Rigidbody2D.AddForce(Vector2.up * JumpForce);
-    }
-
-    private void Shoot()
-    {
-        Vector3 direction;
-        if(transform.localScale.x == 1)
-        {
-            direction = Vector3.right;
-        }
-        else
-        {
-            direction = Vector3.left;
-        }
-        GameObject bullet = Instantiate(Bullet, transform.position + direction * 0.1f, Quaternion.identity);
-        bullet.GetComponent<BulletScript>().Damage = Attack;
-        bullet.GetComponent<BulletScript>().SetDirection(direction);
-    }
-
-    private void FixedUpdate()
-    {
-        if (isDead) return;
-        Rigidbody2D.linearVelocity = new Vector2(Horizontal, Rigidbody2D.linearVelocity.y);
-    }
-    
-    public void AddExperience(int amount)
-    {
-        if (isDead) return;
-        Experience += amount;
-        GruntsKilled += 1;
-        
-        // Comprobar si sube de nivel
-        while (Experience >= MaxExperience)
-        {
-            Experience -= MaxExperience;
-            Level++;
-            StatPoints += 3; // +3 puntos de estadísticas al subir de nivel
-            CalculateMaxExperience();
-        }
-
-        // Guardar automáticamente en el backend Node.js
-        StartCoroutine(SaveStatsRoutine());
-    }
-
-    public void Hit(int damage = 1)
-    {
-        if (isDead) return;
-        
-        Health = Health - damage;
-        if (Health <= 0)
-        {
-            isDead = true;
-            Time.timeScale = 0; // Pausar todo el juego
-        }
-    }
-
     private void OnGUI()
     {
+        if (MiniHeroesRuntimeMode.IsTraining)
+        {
+            return;
+        }
+
+        if (showPostDeathMenu)
+        {
+            DrawMainMenu();
+            return;
+        }
+
         if (isDead)
         {
             DrawDefeatScreen();
             return;
         }
 
-        // Dibujar menú de estadísticas si está activo
         if (showStatsMenu)
         {
             DrawStatsMenu();
         }
 
-        if (Camera.main != null)
+        if (Camera.main == null)
         {
-            Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.6f);
-            
-            float barWidth = 50f;
-            float barHeight = 12f;
-            Rect rect = new Rect(screenPosition.x - barWidth / 2, Screen.height - screenPosition.y - barHeight, barWidth, barHeight);
-            
-            // DIBUJAR EL NIVEL (ENCIMA DE LA BARRA DE VIDA)
-            GUIStyle levelStyle = new GUIStyle();
-            levelStyle.alignment = TextAnchor.MiddleCenter;
-            levelStyle.fontStyle = FontStyle.Bold;
-            levelStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado
-            levelStyle.fontSize = 12;
-            GUI.Label(new Rect(rect.x, rect.y - 18f, rect.width, 20), "Lv. " + Level, levelStyle);
-
-            // Background
-            GUI.color = Color.black;
-            GUI.DrawTexture(rect, Texture2D.whiteTexture);
-            
-            // Foreground (Health)
-            GUI.color = Color.green;
-            Rect healthRect = new Rect(rect.x, rect.y, rect.width * ((float)Health / MaxHealth), rect.height);
-            GUI.DrawTexture(healthRect, Texture2D.whiteTexture);
-
-            // --- BARRA DE EXPERIENCIA ---
-            float xpBarHeight = 6f; // Un poco más delgada que la de vida
-            float spaceBetween = 2f;
-            Rect xpRect = new Rect(rect.x, rect.y + rect.height + spaceBetween, barWidth, xpBarHeight);
-            
-            // Background (Blanco, como pediste)
-            GUI.color = Color.white;
-            GUI.DrawTexture(xpRect, Texture2D.whiteTexture);
-
-            // Foreground (Amarillo)
-            GUI.color = Color.yellow;
-            float xpRatio = Mathf.Clamp01((float)Experience / MaxExperience);
-            Rect xpFillRect = new Rect(xpRect.x, xpRect.y, xpRect.width * xpRatio, xpRect.height);
-            GUI.DrawTexture(xpFillRect, Texture2D.whiteTexture);
-            
-            // Reset GUI color
-            GUI.color = Color.white;
+            return;
         }
+
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 0.6f);
+        float barWidth = 50f;
+        float barHeight = 12f;
+        Rect rect = new Rect(screenPosition.x - barWidth / 2f, Screen.height - screenPosition.y - barHeight, barWidth, barHeight);
+
+        GUIStyle levelStyle = new GUIStyle(GUI.skin.label)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
+            fontSize = 12
+        };
+        levelStyle.normal.textColor = new Color(1f, 0.9f, 0.3f);
+        GUI.Label(new Rect(rect.x, rect.y - 18f, rect.width, 20f), "Lv. " + level, levelStyle);
+
+        GUI.color = Color.black;
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+
+        GUI.color = Color.green;
+        Rect healthRect = new Rect(rect.x, rect.y, rect.width * ((float)health / maxHealth), rect.height);
+        GUI.DrawTexture(healthRect, Texture2D.whiteTexture);
+
+        float xpBarHeight = 6f;
+        Rect xpRect = new Rect(rect.x, rect.y + rect.height + 2f, barWidth, xpBarHeight);
+        GUI.color = Color.white;
+        GUI.DrawTexture(xpRect, Texture2D.whiteTexture);
+
+        GUI.color = Color.yellow;
+        Rect xpFillRect = new Rect(xpRect.x, xpRect.y, xpRect.width * Mathf.Clamp01((float)experience / maxExperience), xpRect.height);
+        GUI.DrawTexture(xpFillRect, Texture2D.whiteTexture);
+        GUI.color = Color.white;
     }
 
     private void DrawDefeatScreen()
     {
-        // Fondo oscuro
-        GUI.backgroundColor = new Color(0, 0, 0, 0.8f);
-        GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
+        GUI.backgroundColor = new Color(0f, 0f, 0f, 0.8f);
+        GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty);
 
-        GUI.backgroundColor = new Color(0.8f, 0.2f, 0.2f); // Tema ROJO
-        GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-        boxStyle.fontSize = 30;
-        boxStyle.fontStyle = FontStyle.Bold;
+        GUI.backgroundColor = new Color(0.8f, 0.2f, 0.2f);
+        GUIStyle boxStyle = new GUIStyle(GUI.skin.box)
+        {
+            fontSize = 30,
+            fontStyle = FontStyle.Bold
+        };
         boxStyle.normal.textColor = Color.white;
 
-        int width = 400;
-        int height = 250;
-        float x = (Screen.width - width) / 2;
-        float y = (Screen.height - height) / 2;
+        int width = 430;
+        int height = 320;
+        float x = (Screen.width - width) / 2f;
+        float y = (Screen.height - height) / 2f;
 
-        GUI.Box(new Rect(x, y, width, height), "¡ HAS MUERTO !", boxStyle);
+        GUI.Box(new Rect(x, y, width, height), "YOU DIED", boxStyle);
 
-        // Estilos de botones
-        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
-        buttonStyle.fontSize = 20;
-
-        // Botón Reintentar
-        GUI.backgroundColor = new Color(0.3f, 0.6f, 0.3f); // Verde
-        if (GUI.Button(new Rect(x + 50, y + 80, 300, 50), "Volver a Intentarlo", buttonStyle))
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
         {
-            Time.timeScale = 1;
+            fontSize = 20
+        };
+
+        GUI.backgroundColor = new Color(0.3f, 0.6f, 0.3f);
+        if (GUI.Button(new Rect(x + 65f, y + 80f, 300f, 50f), "Play Again", buttonStyle))
+        {
+            RestartCurrentScene();
+        }
+
+        GUI.backgroundColor = new Color(0.25f, 0.45f, 0.7f);
+        if (GUI.Button(new Rect(x + 65f, y + 150f, 300f, 50f), "Salir al Menu", buttonStyle))
+        {
+            showPostDeathMenu = true;
+        }
+
+        GUI.backgroundColor = new Color(0.6f, 0.3f, 0.3f);
+        if (GUI.Button(new Rect(x + 65f, y + 220f, 300f, 50f), "Cerrar Sesion", buttonStyle))
+        {
+            ReturnToLogin();
+        }
+
+        GUI.backgroundColor = Color.white;
+    }
+
+    private void DrawMainMenu()
+    {
+        GUI.backgroundColor = Color.black;
+        GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty);
+
+        int panelWidth = 760;
+        int panelHeight = 420;
+        float x = (Screen.width - panelWidth) / 2f;
+        float y = (Screen.height - panelHeight) / 2f;
+
+        GUI.backgroundColor = new Color(0.08f, 0.18f, 0.16f, 1f);
+        GUI.Box(new Rect(x, y, panelWidth, panelHeight), string.Empty);
+
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 28,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+        };
+        titleStyle.normal.textColor = new Color(0.95f, 0.92f, 0.7f);
+        GUI.Label(new Rect(x, y + 18f, panelWidth, 40f), "MENU DEL HEROE", titleStyle);
+
+        DrawCharacterPreview(new Rect(x + 35f, y + 80f, 240f, 260f));
+        DrawMenuStats(new Rect(x + 305f, y + 80f, 420f, 210f));
+
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 20,
+            fontStyle = FontStyle.Bold
+        };
+
+        GUI.backgroundColor = new Color(0.26f, 0.62f, 0.28f);
+        if (GUI.Button(new Rect(x + 305f, y + 315f, 190f, 48f), "Play Again", buttonStyle))
+        {
+            RestartCurrentScene();
+        }
+
+        GUI.backgroundColor = new Color(0.55f, 0.28f, 0.28f);
+        if (GUI.Button(new Rect(x + 535f, y + 315f, 190f, 48f), "Cerrar Sesion", buttonStyle))
+        {
+            ReturnToLogin();
+        }
+
+        GUI.backgroundColor = Color.white;
+    }
+
+    private void DrawCharacterPreview(Rect rect)
+    {
+        GUI.backgroundColor = new Color(0.11f, 0.15f, 0.15f, 1f);
+        GUI.Box(rect, string.Empty);
+
+        GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 18,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+        };
+        labelStyle.normal.textColor = Color.white;
+        GUI.Label(new Rect(rect.x, rect.y + 12f, rect.width, 30f), "JOHN", labelStyle);
+
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+        {
+            GUI.Label(new Rect(rect.x, rect.y + 110f, rect.width, 30f), "Preview no disponible", labelStyle);
+            return;
+        }
+
+        Sprite sprite = spriteRenderer.sprite;
+        Texture2D texture = sprite.texture;
+        Rect texCoords = new Rect(
+            sprite.textureRect.x / texture.width,
+            sprite.textureRect.y / texture.height,
+            sprite.textureRect.width / texture.width,
+            sprite.textureRect.height / texture.height);
+
+        Rect previewRect = new Rect(rect.x + 32f, rect.y + 55f, rect.width - 64f, rect.height - 85f);
+        GUI.DrawTextureWithTexCoords(previewRect, texture, texCoords, true);
+    }
+
+    private void DrawMenuStats(Rect rect)
+    {
+        GUI.backgroundColor = new Color(0.12f, 0.23f, 0.2f, 1f);
+        GUI.Box(rect, string.Empty);
+
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 22,
+            fontStyle = FontStyle.Bold
+        };
+        titleStyle.normal.textColor = new Color(0.95f, 0.92f, 0.7f);
+        GUI.Label(new Rect(rect.x + 20f, rect.y + 15f, rect.width - 40f, 30f), "Estadisticas", titleStyle);
+
+        GUIStyle statStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 18,
+            fontStyle = FontStyle.Bold
+        };
+        statStyle.normal.textColor = Color.white;
+
+        float lineY = rect.y + 60f;
+        float lineHeight = 30f;
+        GUI.Label(new Rect(rect.x + 20f, lineY, rect.width - 40f, 30f), "Nivel: " + level, statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight, rect.width - 40f, 30f), "Vida: " + health + " / " + maxHealth, statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 2f, rect.width - 40f, 30f), "Experiencia: " + experience + " / " + maxExperience, statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 3f, rect.width - 40f, 30f), "Grunts derrotados: " + gruntsKilled, statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 4f, rect.width - 40f, 30f), "Velocidad: " + Speed.ToString("0.0"), statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 5f, rect.width - 40f, 30f), "Salto: " + JumpForce.ToString("0"), statStyle);
+    }
+
+    private void RestartCurrentScene()
+    {
+        Time.timeScale = 1f;
+        showPostDeathMenu = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void ReturnToLogin()
+    {
+        showPostDeathMenu = false;
+        AuthManager.Logout();
+
+        if (Application.CanStreamedLevelBeLoaded("LoginScene"))
+        {
+            SceneManager.LoadScene("LoginScene");
+        }
+        else
+        {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-
-        // Botón Salir / Logout
-        GUI.backgroundColor = new Color(0.6f, 0.3f, 0.3f); // Rojo oscuro
-        if (GUI.Button(new Rect(x + 50, y + 150, 300, 50), "Salir (Cerrar Sesión)", buttonStyle))
-        {
-            Time.timeScale = 1;
-            
-            // Eliminamos la sesión guardada
-            PlayerPrefs.DeleteKey("session_token");
-            PlayerPrefs.Save();
-            
-            // Verificamos si existe la escena 'LoginScene' en los Build Settings
-            if (Application.CanStreamedLevelBeLoaded("LoginScene"))
-            {
-                SceneManager.LoadScene("LoginScene");
-            }
-            else
-            {
-                // Si usa el modo single-scene, simplemente recargamos para que el AuthManager vuelva a pedir login
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
-        }
-        
-        GUI.backgroundColor = Color.white;
     }
 
     private void DrawStatsMenu()
     {
-        int width = 310;
-        int height = 290;
-        float x = 20; // Alineado a la izquierda
-        float y = 20; // Alineado arriba
+        int width = 250;
+        int height = 220;
+        float x = 20f;
+        float y = 20f;
 
-        // Fondo verde oscuro semi-transparente
         GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
-        GUI.Box(new Rect(x, y, width, height), "");
+        GUI.Box(new Rect(x, y, width, height), string.Empty);
 
-        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-        titleStyle.fontSize = 18;
-        titleStyle.fontStyle = FontStyle.Bold;
-        titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado tropical
-        titleStyle.alignment = TextAnchor.MiddleCenter;
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 20,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+        };
+        titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f);
+        GUI.Label(new Rect(x, y + 10f, width, 30f), "STATS (Lv. " + level + ")", titleStyle);
 
-        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS (Lv. " + Level + ") [" + StatPoints + " Pts]", titleStyle);
-
-        GUIStyle statStyle = new GUIStyle(GUI.skin.label);
-        statStyle.fontSize = 16;
-        statStyle.fontStyle = FontStyle.Bold;
+        GUIStyle statStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            fontStyle = FontStyle.Bold
+        };
         statStyle.normal.textColor = Color.white;
 
-        float paddingY = 55;
-        float lineHeight = 35;
+        float paddingY = 55f;
+        float lineHeight = 28f;
+        GUI.Label(new Rect(x + 20f, y + paddingY, width, 30f), "Health: " + health + " / " + maxHealth, statStyle);
+        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight, width, 30f), "Speed: " + Speed, statStyle);
+        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 2f, width, 30f), "Jump: " + JumpForce, statStyle);
+        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 3f, width, 30f), "XP: " + experience + " / " + maxExperience, statStyle);
+        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 4f, width, 30f), "Grunts defeated: " + gruntsKilled, statStyle);
 
-        // Salud Max (Límite 50)
-        GUI.Label(new Rect(x + 20, y + paddingY, 200, 30), "♥ Salud Max: " + MaxHealth + " / 50", statStyle);
-        if (StatPoints > 0 && MaxHealth < 50)
+        GUIStyle infoStyle = new GUIStyle(GUI.skin.label)
         {
-            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f); // Verde claro para subir stats
-            if (GUI.Button(new Rect(x + 230, y + paddingY, 30, 25), "+"))
-            {
-                MaxHealth += 1;
-                Health += 1;
-                StatPoints--;
-                StartCoroutine(SaveStatsRoutine());
-            }
-            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f); // Restaurar
-        }
-
-        // Velocidad (Límite 20)
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, 200, 30), "⚡ Velocidad: " + Speed + " / 20", statStyle);
-        if (StatPoints > 0 && Speed < 20)
-        {
-            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f);
-            if (GUI.Button(new Rect(x + 230, y + paddingY + lineHeight, 30, 25), "+"))
-            {
-                Speed += 1f;
-                StatPoints--;
-                StartCoroutine(SaveStatsRoutine());
-            }
-            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
-        }
-
-        // Ataque (Límite 20)
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, 200, 30), "⚔️ Ataque: " + Attack + " / 20", statStyle);
-        if (StatPoints > 0 && Attack < 20)
-        {
-            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f);
-            if (GUI.Button(new Rect(x + 230, y + paddingY + lineHeight * 2, 30, 25), "+"))
-            {
-                Attack += 1;
-                StatPoints--;
-                StartCoroutine(SaveStatsRoutine());
-            }
-            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
-        }
-
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 3.3f, width, 30), "⭐ Exp: " + Experience + " / " + MaxExperience, statStyle);
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 4.3f, width, 30), "☠️ Bajas: " + GruntsKilled + " Grunts", statStyle);
-
-        // Texto informativo de cerrar
-        GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
-        infoStyle.fontSize = 12;
+            fontSize = 12,
+            alignment = TextAnchor.MiddleCenter
+        };
         infoStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
-        infoStyle.alignment = TextAnchor.MiddleCenter;
-        GUI.Label(new Rect(x, y + height - 30, width, 20), "Pulsa 'M' para cerrar", infoStyle);
-
+        GUI.Label(new Rect(x, y + height - 30f, width, 20f), "Press M to close", infoStyle);
         GUI.backgroundColor = Color.white;
     }
 }
