@@ -24,7 +24,7 @@ public class AuthManager : MonoBehaviour
     private string password = string.Empty;
     private string message = string.Empty;
 
-    private readonly string backendUrl = "https://backend-miniheroes.onrender.com/api/";
+    private readonly string backendUrl = "http://localhost:3000/api/";
 
     [Header("Scene Configuration")]
     [Tooltip("Scene loaded after a successful login. Leave empty to stay on the current scene.")]
