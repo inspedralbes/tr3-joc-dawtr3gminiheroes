@@ -5,6 +5,7 @@ public class BulletScript : MonoBehaviour
 
     public AudioClip Sound;
     public float Speed;
+    public int Damage = 1;
     private Rigidbody2D Rigidbody2D;
     private Vector2 Direction;
 
@@ -36,11 +37,11 @@ public class BulletScript : MonoBehaviour
 
         if(john != null)
         {
-            john.Hit();
+            john.Hit(Damage);
         }
         if(grunt != null)
         {
-            grunt.Hit();
+            grunt.Hit(Damage);
         }
         DestroyBullet();
     }

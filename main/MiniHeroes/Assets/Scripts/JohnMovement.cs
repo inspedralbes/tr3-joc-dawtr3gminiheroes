@@ -22,6 +22,8 @@ public class JohnMovement : MonoBehaviour
     private int MaxExperience = 20;
     private int GruntsKilled = 0;
     private int Level = 1;
+    private int StatPoints = 0;
+    private int Attack = 1;
 
     private string backendUrl = "http://localhost:3000/api/";
 
@@ -31,6 +33,10 @@ public class JohnMovement : MonoBehaviour
         public int experience;
         public int grunts_killed;
         public int level;
+        public int stat_points;
+        public float speed;
+        public int max_health;
+        public int attack;
     }
     
     void Start()
@@ -70,6 +76,11 @@ public class JohnMovement : MonoBehaviour
                 Experience = stats.experience;
                 GruntsKilled = stats.grunts_killed;
                 if (stats.level > 0) Level = stats.level;
+                StatPoints = stats.stat_points;
+                if (stats.speed > 0) Speed = stats.speed;
+                if (stats.max_health > 0) MaxHealth = stats.max_health;
+                if (stats.attack > 0) Attack = stats.attack;
+                Health = MaxHealth; // Rellenamos la vida
                 CalculateMaxExperience();
             }
         }
@@ -83,6 +94,10 @@ public class JohnMovement : MonoBehaviour
         data.experience = Experience;
         data.grunts_killed = GruntsKilled;
         data.level = Level;
+        data.stat_points = StatPoints;
+        data.speed = Speed;
+        data.max_health = MaxHealth;
+        data.attack = Attack;
         string json = JsonUtility.ToJson(data);
 
         UnityWebRequest request = new UnityWebRequest(backendUrl + "stats", "POST");
@@ -153,6 +168,7 @@ public class JohnMovement : MonoBehaviour
             direction = Vector3.left;
         }
         GameObject bullet = Instantiate(Bullet, transform.position + direction * 0.1f, Quaternion.identity);
+        bullet.GetComponent<BulletScript>().Damage = Attack;
         bullet.GetComponent<BulletScript>().SetDirection(direction);
     }
 
@@ -173,6 +189,7 @@ public class JohnMovement : MonoBehaviour
         {
             Experience -= MaxExperience;
             Level++;
+            StatPoints += 3; // +3 puntos de estadísticas al subir de nivel
             CalculateMaxExperience();
         }
 
@@ -180,11 +197,11 @@ public class JohnMovement : MonoBehaviour
         StartCoroutine(SaveStatsRoutine());
     }
 
-    public void Hit()
+    public void Hit(int damage = 1)
     {
         if (isDead) return;
         
-        Health = Health - 1;
+        Health = Health - damage;
         if (Health <= 0)
         {
             isDead = true;
@@ -309,8 +326,8 @@ public class JohnMovement : MonoBehaviour
 
     private void DrawStatsMenu()
     {
-        int width = 250;
-        int height = 240; // Más alto para añadir bajas
+        int width = 310;
+        int height = 290;
         float x = 20; // Alineado a la izquierda
         float y = 20; // Alineado arriba
 
@@ -319,12 +336,12 @@ public class JohnMovement : MonoBehaviour
         GUI.Box(new Rect(x, y, width, height), "");
 
         GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-        titleStyle.fontSize = 20;
+        titleStyle.fontSize = 18;
         titleStyle.fontStyle = FontStyle.Bold;
         titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f); // Dorado tropical
         titleStyle.alignment = TextAnchor.MiddleCenter;
 
-        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS (Lv. " + Level + ")", titleStyle);
+        GUI.Label(new Rect(x, y + 10, width, 30), "ESTADÍSTICAS (Lv. " + Level + ") [" + StatPoints + " Pts]", titleStyle);
 
         GUIStyle statStyle = new GUIStyle(GUI.skin.label);
         statStyle.fontSize = 16;
@@ -332,13 +349,53 @@ public class JohnMovement : MonoBehaviour
         statStyle.normal.textColor = Color.white;
 
         float paddingY = 55;
-        float lineHeight = 28;
+        float lineHeight = 35;
 
-        GUI.Label(new Rect(x + 20, y + paddingY, width, 30), "♥ Salud: " + Health + " / " + MaxHealth, statStyle);
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, width, 30), "⚡ Velocidad: " + Speed, statStyle);
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, width, 30), "⬆ Salto: " + JumpForce, statStyle);
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 3, width, 30), "⭐ Experiencia: " + Experience + " XP", statStyle);
-        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 4, width, 30), "⚔️ Bajas: " + GruntsKilled + " Grunts", statStyle);
+        // Salud Max (Límite 50)
+        GUI.Label(new Rect(x + 20, y + paddingY, 200, 30), "♥ Salud Max: " + MaxHealth + " / 50", statStyle);
+        if (StatPoints > 0 && MaxHealth < 50)
+        {
+            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f); // Verde claro para subir stats
+            if (GUI.Button(new Rect(x + 230, y + paddingY, 30, 25), "+"))
+            {
+                MaxHealth += 1;
+                Health += 1;
+                StatPoints--;
+                StartCoroutine(SaveStatsRoutine());
+            }
+            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f); // Restaurar
+        }
+
+        // Velocidad (Límite 20)
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight, 200, 30), "⚡ Velocidad: " + Speed + " / 20", statStyle);
+        if (StatPoints > 0 && Speed < 20)
+        {
+            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f);
+            if (GUI.Button(new Rect(x + 230, y + paddingY + lineHeight, 30, 25), "+"))
+            {
+                Speed += 1f;
+                StatPoints--;
+                StartCoroutine(SaveStatsRoutine());
+            }
+            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
+        }
+
+        // Ataque (Límite 20)
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 2, 200, 30), "⚔️ Ataque: " + Attack + " / 20", statStyle);
+        if (StatPoints > 0 && Attack < 20)
+        {
+            GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f);
+            if (GUI.Button(new Rect(x + 230, y + paddingY + lineHeight * 2, 30, 25), "+"))
+            {
+                Attack += 1;
+                StatPoints--;
+                StartCoroutine(SaveStatsRoutine());
+            }
+            GUI.backgroundColor = new Color(0.1f, 0.2f, 0.1f, 0.9f);
+        }
+
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 3.3f, width, 30), "⭐ Exp: " + Experience + " / " + MaxExperience, statStyle);
+        GUI.Label(new Rect(x + 20, y + paddingY + lineHeight * 4.3f, width, 30), "☠️ Bajas: " + GruntsKilled + " Grunts", statStyle);
 
         // Texto informativo de cerrar
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);

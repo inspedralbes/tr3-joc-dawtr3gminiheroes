@@ -28,6 +28,10 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
             db.run(`ALTER TABLE users ADD COLUMN experience INTEGER DEFAULT 0`, (err) => {});
             db.run(`ALTER TABLE users ADD COLUMN grunts_killed INTEGER DEFAULT 0`, (err) => {});
             db.run(`ALTER TABLE users ADD COLUMN level INTEGER DEFAULT 1`, (err) => {});
+            db.run(`ALTER TABLE users ADD COLUMN stat_points INTEGER DEFAULT 0`, (err) => {});
+            db.run(`ALTER TABLE users ADD COLUMN speed INTEGER DEFAULT 5`, (err) => {});
+            db.run(`ALTER TABLE users ADD COLUMN max_health INTEGER DEFAULT 10`, (err) => {});
+            db.run(`ALTER TABLE users ADD COLUMN attack INTEGER DEFAULT 1`, (err) => {});
         });
     }
 });
@@ -101,21 +105,21 @@ app.get('/api/me', verifyToken, (req, res) => {
 
 // Obtener estadísticas guardadas
 app.get('/api/stats', verifyToken, (req, res) => {
-    db.get('SELECT experience, grunts_killed, level FROM users WHERE id = ?', [req.user.id], (err, row) => {
+    db.get('SELECT experience, grunts_killed, level, stat_points, speed, max_health, attack FROM users WHERE id = ?', [req.user.id], (err, row) => {
         if (err) return res.status(500).json({ error: 'Error en la base de datos' });
-        res.json(row || { experience: 0, grunts_killed: 0, level: 1 });
+        res.json(row || { experience: 0, grunts_killed: 0, level: 1, stat_points: 0, speed: 5, max_health: 10, attack: 1 });
     });
 });
 
 // Guardar/Actualizar estadísticas
 app.post('/api/stats', verifyToken, (req, res) => {
-    const { experience, grunts_killed, level } = req.body;
+    const { experience, grunts_killed, level, stat_points, speed, max_health, attack } = req.body;
     db.run(
-        'UPDATE users SET experience = ?, grunts_killed = ?, level = ? WHERE id = ?',
-        [experience || 0, grunts_killed || 0, level || 1, req.user.id],
+        'UPDATE users SET experience = ?, grunts_killed = ?, level = ?, stat_points = ?, speed = ?, max_health = ?, attack = ? WHERE id = ?',
+        [experience || 0, grunts_killed || 0, level || 1, stat_points || 0, speed || 5, max_health || 10, attack || 1, req.user.id],
         function(err) {
             if (err) return res.status(500).json({ error: 'Error en la base de datos al guardar' });
-            res.json({ message: 'Estadísticas guardadas con éxito', experience, grunts_killed, level });
+            res.json({ message: 'Estadísticas guardadas con éxito', experience, grunts_killed, level, stat_points, speed, max_health, attack });
         }
     );
 });

@@ -40,9 +40,9 @@ public class GruntScript : MonoBehaviour
         bullet.GetComponent<BulletScript>().SetDirection(direction);
     }
 
-    public void Hit()
+    public void Hit(int damage = 1)
     {
-        Health = Health - 1;
+        Health = Health - damage;
         if (Health <= 0)
         {
             if (John != null)
