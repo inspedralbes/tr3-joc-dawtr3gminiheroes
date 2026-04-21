@@ -52,7 +52,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
 
     
 
-    private readonly string backendUrl = "http://localhost:3000/api/";
+    private readonly string backendUrl = "https://backend-miniheroes.onrender.com/api/";
 
     public DamageTeam Team => DamageTeam.Player;
     public bool IsDead => isDead;
