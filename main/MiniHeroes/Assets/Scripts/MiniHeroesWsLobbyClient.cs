@@ -56,6 +56,12 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         public string scene;
     }
 
+    [Serializable]
+    private class CloseRoomMessage
+    {
+        public string type;
+    }
+
     public bool IsConnected => ws != null && ws.IsOpen;
     public bool IsHost => !string.IsNullOrEmpty(clientId) && clientId == hostId;
     public string RoomId => roomId;
@@ -78,6 +84,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     private string clientId = string.Empty;
     private string hostId = string.Empty;
+    private string initialHostId = string.Empty;
     private string lastError = string.Empty;
 
     private void Update()
@@ -99,6 +106,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         lastError = string.Empty;
         clientId = string.Empty;
         hostId = string.Empty;
+        initialHostId = string.Empty;
         players.Clear();
 
         ws = new MiniHeroesWebSocketClient();
@@ -125,6 +133,15 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         lastError = string.Empty;
         clientId = string.Empty;
         hostId = string.Empty;
+        initialHostId = string.Empty;
+    }
+
+    public void CloseRoom()
+    {
+        if (!IsConnected) return;
+
+        CloseRoomMessage msg = new CloseRoomMessage { type = "close_room" };
+        ws.Send(JsonUtility.ToJson(msg));
     }
 
     public void StartGame(string sceneName)
@@ -186,7 +203,22 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
                 return;
             }
 
+            string previousHostId = hostId;
             hostId = state.hostId ?? string.Empty;
+
+            if (string.IsNullOrEmpty(initialHostId) && !string.IsNullOrEmpty(hostId))
+            {
+                initialHostId = hostId;
+            }
+            else if (!string.IsNullOrEmpty(initialHostId) && hostId != initialHostId)
+            {
+                // El anfitrión original se desconectó
+                lastError = "El anfitrión ha cerrado la sala.";
+                Error?.Invoke(lastError);
+                Disconnect();
+                return;
+            }
+
             players.Clear();
             if (state.players != null)
             {

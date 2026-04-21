@@ -450,13 +450,20 @@ public class AuthManager : MonoBehaviour
 
                 if (wsLobby != null)
                 {
-                    GUI.backgroundColor = new Color(0.26f, 0.62f, 0.28f);
-                    GUI.enabled = !lobbyBusy;
-                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), "Play", smallButtonStyle))
+                    bool canPlay = !lobbyBusy && wsLobby.IsHost;
+                    GUI.backgroundColor = canPlay ? new Color(0.26f, 0.62f, 0.28f) : new Color(0.5f, 0.5f, 0.5f);
+                    GUI.enabled = canPlay;
+                    
+                    string playBtnText = wsLobby.IsHost ? "Play" : "Esperando al creador...";
+                    
+                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), playBtnText, smallButtonStyle))
                     {
-                        lobbyBusy = true;
-                        wsLobby.StartGame(multiplayerSceneName);
-                        lobbyBusy = false;
+                        if (wsLobby.IsHost)
+                        {
+                            lobbyBusy = true;
+                            wsLobby.StartGame(multiplayerSceneName);
+                            lobbyBusy = false;
+                        }
                     }
                     GUI.enabled = true;
                 }
@@ -465,6 +472,10 @@ public class AuthManager : MonoBehaviour
                 float leaveY = y + 355f;
                 if (GUI.Button(new Rect(x + padding, leaveY, width - (padding * 2f), 35f), "Salir del Lobby", smallButtonStyle))
                 {
+                    if (wsLobby != null && wsLobby.IsHost)
+                    {
+                        wsLobby.CloseRoom();
+                    }
                     lobbyStatus = string.Empty;
                     lobbyBusy = false;
                     wsLobby?.Disconnect();
@@ -621,6 +632,12 @@ public class AuthManager : MonoBehaviour
     private void OnLobbyError(string error)
     {
         lobbyStatus = error;
+        if (uiState == UiState.Lobby && (wsLobby == null || !wsLobby.IsConnected))
+        {
+            uiState = UiState.MultiplayerMenu;
+            lobbyBusy = false;
+            // Retain the error message in the lobbyStatus so the user sees it in the Multiplayer menu
+        }
     }
 
     private void OnStartGameReceived(string sceneName)
