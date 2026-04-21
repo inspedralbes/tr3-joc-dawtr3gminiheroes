@@ -5,12 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class JohnMovement : MonoBehaviour, IDamageable
 {
+    private const int StatPointsPerLevel = 3;
+    private const int BaseMaxHealth = 10;
+    private const int MaxHealthCap = 50;
+    private const int BaseAttack = 1;
+    private const int MaxAttackCap = 25;
+    private const float FixedMoveSpeed = 1.5f;
+    private const int HealthUpgradeAmount = 2;
+    private const int DamageUpgradeAmount = 1;
+
     public GameObject Bullet;
-    public float Speed = 4f;
+    public float Speed = FixedMoveSpeed;
     public float JumpForce = 150f;
     public float GroundCheckDistance = 0.18f;
     public float CoyoteTime = 0.12f;
     public float JumpBufferTime = 0.12f;
+    public float DamageInvulnerabilityDuration = 0.6f;
     public LayerMask GroundMask = ~0;
 
     private Rigidbody2D body;
@@ -22,8 +32,8 @@ public class JohnMovement : MonoBehaviour, IDamageable
     private float lastShootTime;
     private float lastGroundedTime = -10f;
     private float lastJumpPressedTime = -10f;
-    private int maxHealth = 10;
-    private int health = 10;
+    private int maxHealth = BaseMaxHealth;
+    private int health = BaseMaxHealth;
     private bool isDead;
     private bool showStatsMenu;
     private bool showPostDeathMenu;
@@ -31,11 +41,14 @@ public class JohnMovement : MonoBehaviour, IDamageable
     private int maxExperience = 20;
     private int gruntsKilled;
     private int level = 1;
+    private int statPoints;
+    private int attack = BaseAttack;
     private Vector3 spawnPoint;
     private bool useExternalControl;
     private float externalHorizontal;
     private bool externalJumpRequested;
     private bool externalShootRequested;
+    private float invulnerableUntil = -10f;
 
     
 
@@ -58,11 +71,16 @@ public class JohnMovement : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        Time.timeScale = 1f;
         body = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spawnPoint = transform.position;
+        attack = BaseAttack;
+        maxHealth = BaseMaxHealth;
+        health = BaseMaxHealth;
+        Speed = FixedMoveSpeed;
 
         CalculateMaxExperience();
         EnsureGameplaySystems();
@@ -75,6 +93,8 @@ public class JohnMovement : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        UpdateInvulnerabilityVisual();
+
         if (isDead || Time.timeScale == 0f)
         {
             return;
@@ -162,6 +182,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
         {
             experience -= maxExperience;
             level += 1;
+            statPoints += StatPointsPerLevel;
             CalculateMaxExperience();
         }
 
@@ -178,7 +199,17 @@ public class JohnMovement : MonoBehaviour, IDamageable
             return;
         }
 
+        if (IsInvulnerable())
+        {
+            return;
+        }
+
         health -= amount;
+        if (DamageInvulnerabilityDuration > 0f)
+        {
+            invulnerableUntil = Time.time + DamageInvulnerabilityDuration;
+        }
+
         if (source != null)
         {
             GruntScript grunt = source.GetComponentInParent<GruntScript>();
@@ -195,6 +226,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
 
         if (MiniHeroesRuntimeMode.IsTraining)
         {
+            ResetVisualState();
             Object.FindFirstObjectByType<MiniHeroesTrainingManager>()?.HandlePlayerDeath();
             return;
         }
@@ -202,6 +234,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
         isDead = true;
         showPostDeathMenu = false;
         Time.timeScale = 0f;
+        ResetVisualState();
     }
 
     public void Hit()
@@ -229,6 +262,8 @@ public class JohnMovement : MonoBehaviour, IDamageable
         lastGroundedTime = Time.time;
         lastJumpPressedTime = -10f;
         showPostDeathMenu = false;
+        invulnerableUntil = -10f;
+        ResetVisualState();
 
         if (body != null)
         {
@@ -262,6 +297,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
         if (bulletScript != null)
         {
             bulletScript.Configure(direction, DamageTeam.Player, gameObject);
+            bulletScript.Damage = Mathf.Max(1, attack);
         }
     }
 
@@ -295,6 +331,44 @@ public class JohnMovement : MonoBehaviour, IDamageable
         }
 
         return grounded || Time.time <= lastGroundedTime + CoyoteTime;
+    }
+
+    private bool IsInvulnerable()
+    {
+        return Time.time < invulnerableUntil;
+    }
+
+    private void UpdateInvulnerabilityVisual()
+    {
+        if (spriteRenderer == null)
+        {
+            return;
+        }
+
+        if (!IsInvulnerable() || isDead)
+        {
+            Color visible = spriteRenderer.color;
+            visible.a = 1f;
+            spriteRenderer.color = visible;
+            return;
+        }
+
+        float alpha = Mathf.Sin(Time.time * 25f) > 0f ? 0.45f : 1f;
+        Color blinking = spriteRenderer.color;
+        blinking.a = alpha;
+        spriteRenderer.color = blinking;
+    }
+
+    private void ResetVisualState()
+    {
+        if (spriteRenderer == null)
+        {
+            return;
+        }
+
+        Color reset = spriteRenderer.color;
+        reset.a = 1f;
+        spriteRenderer.color = reset;
     }
 
     private void EnsureGameplaySystems()
@@ -367,6 +441,25 @@ public class JohnMovement : MonoBehaviour, IDamageable
         {
             level = stats.level;
         }
+        statPoints = Mathf.Max(0, stats.stat_points);
+        Speed = FixedMoveSpeed;
+        if (stats.max_health > 0)
+        {
+            maxHealth = Mathf.Clamp(stats.max_health, BaseMaxHealth, MaxHealthCap);
+        }
+        else
+        {
+            maxHealth = BaseMaxHealth;
+        }
+        if (stats.attack > 0)
+        {
+            attack = Mathf.Clamp(stats.attack, BaseAttack, MaxAttackCap);
+        }
+        else
+        {
+            attack = BaseAttack;
+        }
+        health = maxHealth;
         CalculateMaxExperience();
     }
 
@@ -381,7 +474,11 @@ public class JohnMovement : MonoBehaviour, IDamageable
         {
             experience = experience,
             grunts_killed = gruntsKilled,
-            level = level
+            level = level,
+            stat_points = statPoints,
+            speed = Speed,
+            max_health = maxHealth,
+            attack = attack
         };
 
         string json = JsonUtility.ToJson(data);
@@ -453,6 +550,19 @@ public class JohnMovement : MonoBehaviour, IDamageable
         GUI.color = Color.yellow;
         Rect xpFillRect = new Rect(xpRect.x, xpRect.y, xpRect.width * Mathf.Clamp01((float)experience / maxExperience), xpRect.height);
         GUI.DrawTexture(xpFillRect, Texture2D.whiteTexture);
+
+        if (IsInvulnerable())
+        {
+            GUIStyle invulnerableStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                fontSize = 11
+            };
+            invulnerableStyle.normal.textColor = new Color(1f, 0.8f, 0.2f);
+            GUI.Label(new Rect(rect.x - 20f, rect.y - 34f, rect.width + 40f, 16f), "INVULNERABLE", invulnerableStyle);
+        }
+
         GUI.color = Color.white;
     }
 
@@ -606,20 +716,24 @@ public class JohnMovement : MonoBehaviour, IDamageable
         GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight, rect.width - 40f, 30f), "Vida: " + health + " / " + maxHealth, statStyle);
         GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 2f, rect.width - 40f, 30f), "Experiencia: " + experience + " / " + maxExperience, statStyle);
         GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 3f, rect.width - 40f, 30f), "Grunts derrotados: " + gruntsKilled, statStyle);
-        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 4f, rect.width - 40f, 30f), "Velocidad: " + Speed.ToString("0.0"), statStyle);
-        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 5f, rect.width - 40f, 30f), "Salto: " + JumpForce.ToString("0"), statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 4f, rect.width - 40f, 30f), "Daño: " + attack, statStyle);
+        GUI.Label(new Rect(rect.x + 20f, lineY + lineHeight * 5f, rect.width - 40f, 30f), "Puntos: " + statPoints, statStyle);
     }
 
     private void RestartCurrentScene()
     {
         Time.timeScale = 1f;
         showPostDeathMenu = false;
+        invulnerableUntil = -10f;
+        ResetVisualState();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void ReturnToLogin()
     {
         showPostDeathMenu = false;
+        invulnerableUntil = -10f;
+        ResetVisualState();
         AuthManager.Logout();
 
         if (Application.CanStreamedLevelBeLoaded("LoginScene"))
@@ -634,8 +748,8 @@ public class JohnMovement : MonoBehaviour, IDamageable
 
     private void DrawStatsMenu()
     {
-        int width = 250;
-        int height = 220;
+        int width = 330;
+        int height = 260;
         float x = 20f;
         float y = 20f;
 
@@ -659,12 +773,12 @@ public class JohnMovement : MonoBehaviour, IDamageable
         statStyle.normal.textColor = Color.white;
 
         float paddingY = 55f;
-        float lineHeight = 28f;
-        GUI.Label(new Rect(x + 20f, y + paddingY, width, 30f), "Health: " + health + " / " + maxHealth, statStyle);
-        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight, width, 30f), "Speed: " + Speed, statStyle);
-        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 2f, width, 30f), "Jump: " + JumpForce, statStyle);
-        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 3f, width, 30f), "XP: " + experience + " / " + maxExperience, statStyle);
-        GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 4f, width, 30f), "Grunts defeated: " + gruntsKilled, statStyle);
+        float lineHeight = 32f;
+        GUI.Label(new Rect(x + 20f, y + paddingY - 24f, width - 40f, 24f), "Stat points: " + statPoints, statStyle);
+        DrawUpgradeRow(x, y + paddingY, "MAX HP", maxHealth + " / " + MaxHealthCap, statPoints > 0 && maxHealth < MaxHealthCap, TryUpgradeMaxHealth);
+        DrawUpgradeRow(x, y + paddingY + lineHeight, "Damage", attack + " / " + MaxAttackCap, statPoints > 0 && attack < MaxAttackCap, TryUpgradeDamage);
+        GUI.Label(new Rect(x + 20f, y + paddingY + (lineHeight * 2f) + 4f, width - 40f, 24f), "XP: " + experience + " / " + maxExperience, statStyle);
+        GUI.Label(new Rect(x + 20f, y + paddingY + (lineHeight * 3f) + 4f, width - 40f, 24f), "Grunts defeated: " + gruntsKilled, statStyle);
 
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label)
         {
@@ -674,5 +788,59 @@ public class JohnMovement : MonoBehaviour, IDamageable
         infoStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
         GUI.Label(new Rect(x, y + height - 30f, width, 20f), "Press M to close", infoStyle);
         GUI.backgroundColor = Color.white;
+    }
+
+    private void DrawUpgradeRow(float x, float y, string label, string value, bool canUpgrade, System.Action onUpgrade)
+    {
+        GUIStyle statStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 16,
+            fontStyle = FontStyle.Bold
+        };
+        statStyle.normal.textColor = Color.white;
+
+        GUI.Label(new Rect(x + 20f, y, 170f, 28f), label + ": " + value, statStyle);
+
+        GUI.enabled = canUpgrade;
+        GUI.backgroundColor = canUpgrade ? new Color(0.2f, 0.6f, 0.2f) : new Color(0.5f, 0.5f, 0.5f);
+        if (GUI.Button(new Rect(x + 245f, y, 65f, 28f), "+"))
+        {
+            onUpgrade?.Invoke();
+        }
+        GUI.enabled = true;
+        GUI.backgroundColor = Color.white;
+    }
+
+    private void TryUpgradeMaxHealth()
+    {
+        if (statPoints <= 0 || maxHealth >= MaxHealthCap)
+        {
+            return;
+        }
+
+        statPoints -= 1;
+        maxHealth = Mathf.Min(MaxHealthCap, maxHealth + HealthUpgradeAmount);
+        health = Mathf.Min(maxHealth, health + HealthUpgradeAmount);
+        SaveStatsIfNeeded();
+    }
+
+    private void TryUpgradeDamage()
+    {
+        if (statPoints <= 0 || attack >= MaxAttackCap)
+        {
+            return;
+        }
+
+        statPoints -= 1;
+        attack = Mathf.Min(MaxAttackCap, attack + DamageUpgradeAmount);
+        SaveStatsIfNeeded();
+    }
+
+    private void SaveStatsIfNeeded()
+    {
+        if (!MiniHeroesRuntimeMode.IsTraining)
+        {
+            StartCoroutine(SaveStatsRoutine());
+        }
     }
 }

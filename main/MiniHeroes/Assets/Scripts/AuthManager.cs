@@ -450,20 +450,20 @@ public class AuthManager : MonoBehaviour
 
                 if (wsLobby != null)
                 {
-                    bool canPlay = !lobbyBusy && wsLobby.IsHost;
+                    bool canPlay = !lobbyBusy;
                     GUI.backgroundColor = canPlay ? new Color(0.26f, 0.62f, 0.28f) : new Color(0.5f, 0.5f, 0.5f);
                     GUI.enabled = canPlay;
-                    
-                    string playBtnText = wsLobby.IsHost ? "Play" : "Esperando al creador...";
-                    
-                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), playBtnText, smallButtonStyle))
+
+                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), "Play", smallButtonStyle))
                     {
-                        if (wsLobby.IsHost)
+                        lobbyBusy = true;
+                        if (wsLobby.IsConnected && wsLobby.IsHost)
                         {
-                            lobbyBusy = true;
                             wsLobby.StartGame(multiplayerSceneName);
-                            lobbyBusy = false;
                         }
+
+                        EnterMultiplayerGame(multiplayerSceneName);
+                        lobbyBusy = false;
                     }
                     GUI.enabled = true;
                 }
@@ -631,12 +631,18 @@ public class AuthManager : MonoBehaviour
 
     private void OnLobbyError(string error)
     {
-        lobbyStatus = error;
-        if (uiState == UiState.Lobby && (wsLobby == null || !wsLobby.IsConnected))
+        if (string.Equals(error, "Desconectado del lobby.", System.StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(error, "Unable to connect to the remote server", System.StringComparison.OrdinalIgnoreCase))
         {
-            uiState = UiState.MultiplayerMenu;
+            return;
+        }
+
+        lobbyStatus = error;
+        // Do not auto-exit the lobby on socket errors/disconnects.
+        // The player leaves only by pressing lobby/menu buttons.
+        if (uiState == UiState.Lobby)
+        {
             lobbyBusy = false;
-            // Retain the error message in the lobbyStatus so the user sees it in the Multiplayer menu
         }
     }
 
