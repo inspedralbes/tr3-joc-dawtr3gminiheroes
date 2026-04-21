@@ -237,17 +237,17 @@ public class JohnMovement : MonoBehaviour, IDamageable
     }
 
     private void Jump()
+{
+    if (body == null)
     {
-        if (body == null)
-        {
-            return;
-        }
-
-        lastJumpPressedTime = -10f;
-        lastGroundedTime = -10f;
-        body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
-        body.AddForce(Vector2.up * JumpForce);
+        return;
     }
+
+    lastJumpPressedTime = -10f;
+    lastGroundedTime = -10f;
+
+    body.linearVelocity = new Vector2(body.linearVelocity.x, JumpForce * Time.fixedDeltaTime);
+}
 
     private void Shoot()
     {
@@ -266,18 +266,26 @@ public class JohnMovement : MonoBehaviour, IDamageable
     }
 
     private bool CheckGrounded()
+{
+    if (capsuleCollider == null)
     {
-        if (capsuleCollider == null)
-        {
-            return Physics2D.OverlapCircle(transform.position + Vector3.down * (GroundCheckDistance * 0.5f), GroundCheckDistance, GroundMask) != null;
-        }
-
-        Bounds bounds = capsuleCollider.bounds;
-        Vector2 checkCenter = new Vector2(bounds.center.x, bounds.min.y - (GroundCheckDistance * 0.5f));
-        Vector2 checkSize = new Vector2(bounds.size.x * 0.85f, GroundCheckDistance);
-        Collider2D hit = Physics2D.OverlapBox(checkCenter, checkSize, 0f, GroundMask);
-        return hit != null && hit.gameObject != gameObject;
+        return false;
     }
+
+    Bounds bounds = capsuleCollider.bounds;
+
+    float rayLength = GroundCheckDistance;
+
+    Vector2 center = new Vector2(bounds.center.x, bounds.min.y);
+    Vector2 left = new Vector2(bounds.min.x + 0.05f, bounds.min.y);
+    Vector2 right = new Vector2(bounds.max.x - 0.05f, bounds.min.y);
+
+    RaycastHit2D hitCenter = Physics2D.Raycast(center, Vector2.down, rayLength, GroundMask);
+    RaycastHit2D hitLeft = Physics2D.Raycast(left, Vector2.down, rayLength, GroundMask);
+    RaycastHit2D hitRight = Physics2D.Raycast(right, Vector2.down, rayLength, GroundMask);
+
+    return hitCenter.collider != null || hitLeft.collider != null || hitRight.collider != null;
+}
 
     private bool CanUseBufferedJump()
     {
