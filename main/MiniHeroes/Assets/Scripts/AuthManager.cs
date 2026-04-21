@@ -448,11 +448,11 @@ public class AuthManager : MonoBehaviour
                     GUI.Label(new Rect(x + padding, y + 295f, width - (padding * 2f), 20f), lobbyStatus, labelStyle);
                 }
 
-                if (wsLobby != null && wsLobby.IsHost)
+                if (wsLobby != null)
                 {
                     GUI.backgroundColor = new Color(0.26f, 0.62f, 0.28f);
                     GUI.enabled = !lobbyBusy;
-                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), "Empezar Partida", smallButtonStyle))
+                    if (GUI.Button(new Rect(x + padding, y + 315f, width - (padding * 2f), 35f), "Play", smallButtonStyle))
                     {
                         lobbyBusy = true;
                         wsLobby.StartGame(multiplayerSceneName);
@@ -462,7 +462,7 @@ public class AuthManager : MonoBehaviour
                 }
 
                 GUI.backgroundColor = new Color(0.4f, 0.3f, 0.2f);
-                float leaveY = wsLobby != null && wsLobby.IsHost ? (y + 355f) : (y + 320f);
+                float leaveY = y + 355f;
                 if (GUI.Button(new Rect(x + padding, leaveY, width - (padding * 2f), 35f), "Salir del Lobby", smallButtonStyle))
                 {
                     lobbyStatus = string.Empty;
@@ -507,7 +507,7 @@ public class AuthManager : MonoBehaviour
 
                 if (player != null)
                 {
-                    text = "Slot " + player.slot + ": " + player.username + " | Nivel " + player.level + " | XP " + player.experience + " | Kills " + player.grunts_killed;
+                    text = "Perfil: " + player.username + " | Nivel " + player.level + " | XP " + player.experience + " | Kills " + player.grunts_killed;
                 }
             }
 
