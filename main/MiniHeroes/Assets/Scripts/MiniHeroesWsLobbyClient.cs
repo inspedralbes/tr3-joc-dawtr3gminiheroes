@@ -84,7 +84,6 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     private string clientId = string.Empty;
     private string hostId = string.Empty;
-    private string initialHostId = string.Empty;
     private string lastError = string.Empty;
 
     private void Update()
@@ -106,7 +105,6 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         lastError = string.Empty;
         clientId = string.Empty;
         hostId = string.Empty;
-        initialHostId = string.Empty;
         players.Clear();
 
         ws = new MiniHeroesWebSocketClient();
@@ -133,7 +131,6 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         lastError = string.Empty;
         clientId = string.Empty;
         hostId = string.Empty;
-        initialHostId = string.Empty;
     }
 
     public void CloseRoom()
@@ -203,30 +200,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
             {
                 return;
             }
-
-            string previousHostId = hostId;
             hostId = state.hostId ?? string.Empty;
-
-            Debug.Log($"CLIENT ID: {clientId} | HOST ID: {hostId} | PLAYERS: {state.players?.Length}");
-
-            if (!string.IsNullOrEmpty(clientId))
-            {
-                if (string.IsNullOrEmpty(initialHostId) && !string.IsNullOrEmpty(hostId))
-                {
-                    initialHostId = hostId;
-                }
-                else if (!string.IsNullOrEmpty(initialHostId) && hostId != initialHostId)
-                {
-                    // Solo desconectar si NO eres el host original
-                    if (clientId != initialHostId)
-                    {
-                        lastError = "El anfitrión ha cerrado la sala.";
-                        Error?.Invoke(lastError);
-                        Disconnect();
-                        return;
-                    }
-                }
-            }
 
             players.Clear();
             if (state.players != null)
@@ -266,7 +240,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     private void OnWsClosed(int code)
     {
-        lastError = "Desconectado del lobby.";
+        lastError = "Unable to connect to the remote server";
         Error?.Invoke(lastError);
     }
 
@@ -307,4 +281,3 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         return json.Substring(idx, end - idx);
     }
 }
-

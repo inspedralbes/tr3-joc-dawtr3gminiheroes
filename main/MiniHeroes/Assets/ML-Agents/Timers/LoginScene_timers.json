@@ -1,1 +1,76 @@
-{"count":1,"self":671.9755776,"total":672.3138947,"children":{"InitializeActuators":{"count":20,"self":0.0020934,"total":0.0020934,"children":null},"InitializeSensors":{"count":20,"self":0.0015271999999999998,"total":0.0015271999999999998,"children":null},"AgentSendState":{"count":1854,"self":0.0631055,"total":0.1406204,"children":{"CollectObservations":{"count":5936,"self":0.052537999999999994,"total":0.052537999999999994,"children":null},"WriteActionMask":{"count":5936,"self":0.009837799999999999,"total":0.009837799999999999,"children":null},"RequestDecision":{"count":5936,"self":0.015139099999999999,"total":0.015139099999999999,"children":null}}},"DecideAction":{"count":1854,"self":0.0715468,"total":0.0715468,"children":null},"AgentAct":{"count":1854,"self":0.1225521,"total":0.1225521,"children":null}},"gauges":{"MiniHeroesGrunt.CumulativeReward":{"count":1,"max":-1.15,"min":-1.15,"runningAverage":-1.15,"value":-1.15,"weightedAverage":-1.15}},"metadata":{"timer_format_version":"0.1.0","start_time_seconds":"1776766091","unity_version":"6000.0.62f1","command_line_arguments":"C:\\Program Files\\Unity\\Hub\\Editor\\6000.0.62f1\\Editor\\Unity.exe","communication_protocol_version":"1.5.0","com.unity.ml-agents_version":"4.0.0","scene_name":"LoginScene","end_time_seconds":"1776766763"}}
+{
+    "count": 1,
+    "self": 43.2793024,
+    "total": 43.3643182,
+    "children": {
+        "InitializeActuators": {
+            "count": 21,
+            "self": 0,
+            "total": 0,
+            "children": null
+        },
+        "InitializeSensors": {
+            "count": 21,
+            "self": 0.001015,
+            "total": 0.001015,
+            "children": null
+        },
+        "AgentSendState": {
+            "count": 1888,
+            "self": 0.015478599999999999,
+            "total": 0.0345795,
+            "children": {
+                "CollectObservations": {
+                    "count": 6048,
+                    "self": 0.012438,
+                    "total": 0.012438,
+                    "children": null
+                },
+                "WriteActionMask": {
+                    "count": 6048,
+                    "self": 0.0010069,
+                    "total": 0.0010069,
+                    "children": null
+                },
+                "RequestDecision": {
+                    "count": 6048,
+                    "self": 0.005656,
+                    "total": 0.005656,
+                    "children": null
+                }
+            }
+        },
+        "DecideAction": {
+            "count": 1888,
+            "self": 0.014055199999999999,
+            "total": 0.014055199999999999,
+            "children": null
+        },
+        "AgentAct": {
+            "count": 1888,
+            "self": 0.035367499999999996,
+            "total": 0.035367499999999996,
+            "children": null
+        }
+    },
+    "gauges": {
+        "MiniHeroesGrunt.CumulativeReward": {
+            "count": 2,
+            "max": -0.100000143,
+            "min": -0.450000167,
+            "runningAverage": -0.275000155,
+            "value": -0.450000167,
+            "weightedAverage": -0.187500149
+        }
+    },
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1776806612",
+        "unity_version": "6000.0.62f1",
+        "command_line_arguments": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.0.62f1\\Editor\\Unity.exe -projectpath C:\\Users\\Arnau\\Desktop\\Institut\\Projectes\\tr3-joc-dawtr3gminiheroes\\main\\MiniHeroes -acceptSoftwareTermsForThisRunOnly -useHub -hubIPC -cloudEnvironment production",
+        "communication_protocol_version": "1.5.0",
+        "com.unity.ml-agents_version": "4.0.0",
+        "scene_name": "LoginScene",
+        "end_time_seconds": "1776806656"
+    }
+}
