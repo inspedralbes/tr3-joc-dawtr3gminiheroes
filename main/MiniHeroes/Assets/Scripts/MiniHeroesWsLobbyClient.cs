@@ -187,6 +187,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
             if (welcome != null)
             {
                 clientId = welcome.clientId ?? string.Empty;
+                Debug.Log($"WELCOME -> CLIENT ID ASSIGNED: {welcome.clientId}");
                 if (!string.IsNullOrEmpty(welcome.roomId))
                 {
                     roomId = welcome.roomId;
@@ -206,17 +207,25 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
             string previousHostId = hostId;
             hostId = state.hostId ?? string.Empty;
 
-            if (string.IsNullOrEmpty(initialHostId) && !string.IsNullOrEmpty(hostId))
+            Debug.Log($"CLIENT ID: {clientId} | HOST ID: {hostId} | PLAYERS: {state.players?.Length}");
+
+            if (!string.IsNullOrEmpty(clientId))
             {
-                initialHostId = hostId;
-            }
-            else if (!string.IsNullOrEmpty(initialHostId) && hostId != initialHostId)
-            {
-                // El anfitrión original se desconectó
-                lastError = "El anfitrión ha cerrado la sala.";
-                Error?.Invoke(lastError);
-                Disconnect();
-                return;
+                if (string.IsNullOrEmpty(initialHostId) && !string.IsNullOrEmpty(hostId))
+                {
+                    initialHostId = hostId;
+                }
+                else if (!string.IsNullOrEmpty(initialHostId) && hostId != initialHostId)
+                {
+                    // Solo desconectar si NO eres el host original
+                    if (clientId != initialHostId)
+                    {
+                        lastError = "El anfitrión ha cerrado la sala.";
+                        Error?.Invoke(lastError);
+                        Disconnect();
+                        return;
+                    }
+                }
             }
 
             players.Clear();

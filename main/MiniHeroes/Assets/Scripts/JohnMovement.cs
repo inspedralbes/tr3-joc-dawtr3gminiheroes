@@ -36,7 +36,8 @@ public class JohnMovement : MonoBehaviour, IDamageable
     private float externalHorizontal;
     private bool externalJumpRequested;
     private bool externalShootRequested;
-
+    private int statPoints = 0;
+    public int pointsPerLevel = 3;
     
 
     private readonly string backendUrl = "http://localhost:3000/api/";
@@ -148,6 +149,31 @@ public class JohnMovement : MonoBehaviour, IDamageable
         body.linearVelocity = new Vector2(horizontal * Speed, body.linearVelocity.y);
     }
 
+    public void UpgradeHealth()
+    {
+        if (statPoints <= 0) return;
+
+        maxHealth += 2;
+        health = maxHealth;
+        statPoints--;
+    }
+
+    public void UpgradeSpeed()
+    {
+        if (statPoints <= 0) return;
+
+        Speed += 0.5f;
+        statPoints--;
+    }
+
+    public void UpgradeJump()
+    {
+        if (statPoints <= 0) return;
+
+        JumpForce += 20f;
+        statPoints--;
+    }
+
     public void AddExperience(int amount)
     {
         if (isDead)
@@ -162,6 +188,9 @@ public class JohnMovement : MonoBehaviour, IDamageable
         {
             experience -= maxExperience;
             level += 1;
+
+            statPoints += pointsPerLevel;
+
             CalculateMaxExperience();
         }
 
@@ -635,7 +664,7 @@ public class JohnMovement : MonoBehaviour, IDamageable
     private void DrawStatsMenu()
     {
         int width = 250;
-        int height = 220;
+        int height = 320;
         float x = 20f;
         float y = 20f;
 
@@ -649,7 +678,6 @@ public class JohnMovement : MonoBehaviour, IDamageable
             alignment = TextAnchor.MiddleCenter
         };
         titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f);
-        GUI.Label(new Rect(x, y + 10f, width, 30f), "STATS (Lv. " + level + ")", titleStyle);
 
         GUIStyle statStyle = new GUIStyle(GUI.skin.label)
         {
@@ -658,13 +686,35 @@ public class JohnMovement : MonoBehaviour, IDamageable
         };
         statStyle.normal.textColor = Color.white;
 
+        GUI.Label(new Rect(x, y + 10f, width, 30f), "STATS (Lv. " + level + ")", titleStyle);
+
+        GUI.Label(new Rect(x + 20f, y + 40f, width, 30f), "Points: " + statPoints, statStyle);
+
         float paddingY = 55f;
         float lineHeight = 28f;
+
         GUI.Label(new Rect(x + 20f, y + paddingY, width, 30f), "Health: " + health + " / " + maxHealth, statStyle);
         GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight, width, 30f), "Speed: " + Speed, statStyle);
         GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 2f, width, 30f), "Jump: " + JumpForce, statStyle);
         GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 3f, width, 30f), "XP: " + experience + " / " + maxExperience, statStyle);
         GUI.Label(new Rect(x + 20f, y + paddingY + lineHeight * 4f, width, 30f), "Grunts defeated: " + gruntsKilled, statStyle);
+
+        float buttonY = y + paddingY + lineHeight * 5f;
+
+        if (GUI.Button(new Rect(x + 20f, buttonY, 200f, 25f), "Upgrade Health"))
+        {
+            UpgradeHealth();
+        }
+
+        if (GUI.Button(new Rect(x + 20f, buttonY + 30f, 200f, 25f), "Upgrade Speed"))
+        {
+            UpgradeSpeed();
+        }
+
+        if (GUI.Button(new Rect(x + 20f, buttonY + 60f, 200f, 25f), "Upgrade Jump"))
+        {
+            UpgradeJump();
+        }
 
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label)
         {
@@ -672,7 +722,9 @@ public class JohnMovement : MonoBehaviour, IDamageable
             alignment = TextAnchor.MiddleCenter
         };
         infoStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
+
         GUI.Label(new Rect(x, y + height - 30f, width, 20f), "Press M to close", infoStyle);
+
         GUI.backgroundColor = Color.white;
     }
 }
