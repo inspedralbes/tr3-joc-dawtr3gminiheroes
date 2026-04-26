@@ -194,6 +194,31 @@ public class JohnMovement : MonoBehaviour, IDamageable
         body.linearVelocity = new Vector2(horizontal * Speed, body.linearVelocity.y);
     }
 
+    public void UpgradeHealth()
+    {
+        if (statPoints <= 0) return;
+
+        maxHealth += 2;
+        health = maxHealth;
+        statPoints--;
+    }
+
+    public void UpgradeSpeed()
+    {
+        if (statPoints <= 0) return;
+
+        Speed += 0.5f;
+        statPoints--;
+    }
+
+    public void UpgradeJump()
+    {
+        if (statPoints <= 0) return;
+
+        JumpForce += 20f;
+        statPoints--;
+    }
+
     public void AddExperience(int amount)
     {
         if (isRemotePlayer || isDead)
@@ -851,7 +876,6 @@ public class JohnMovement : MonoBehaviour, IDamageable
             alignment = TextAnchor.MiddleCenter
         };
         titleStyle.normal.textColor = new Color(1f, 0.9f, 0.3f);
-        GUI.Label(new Rect(x, y + 10f, width, 30f), "STATS (Lv. " + level + ")", titleStyle);
 
         GUIStyle statStyle = new GUIStyle(GUI.skin.label)
         {
@@ -859,6 +883,10 @@ public class JohnMovement : MonoBehaviour, IDamageable
             fontStyle = FontStyle.Bold
         };
         statStyle.normal.textColor = Color.white;
+
+        GUI.Label(new Rect(x, y + 10f, width, 30f), "STATS (Lv. " + level + ")", titleStyle);
+
+        GUI.Label(new Rect(x + 20f, y + 40f, width, 30f), "Points: " + statPoints, statStyle);
 
         float paddingY = 55f;
         float lineHeight = 32f;
@@ -868,13 +896,32 @@ public class JohnMovement : MonoBehaviour, IDamageable
         GUI.Label(new Rect(x + 20f, y + paddingY + (lineHeight * 2f) + 4f, width - 40f, 24f), "XP: " + experience + " / " + maxExperience, statStyle);
         GUI.Label(new Rect(x + 20f, y + paddingY + (lineHeight * 3f) + 4f, width - 40f, 24f), "Grunts defeated: " + gruntsKilled, statStyle);
 
+        float buttonY = y + paddingY + lineHeight * 5f;
+
+        if (GUI.Button(new Rect(x + 20f, buttonY, 200f, 25f), "Upgrade Health"))
+        {
+            UpgradeHealth();
+        }
+
+        if (GUI.Button(new Rect(x + 20f, buttonY + 30f, 200f, 25f), "Upgrade Speed"))
+        {
+            UpgradeSpeed();
+        }
+
+        if (GUI.Button(new Rect(x + 20f, buttonY + 60f, 200f, 25f), "Upgrade Jump"))
+        {
+            UpgradeJump();
+        }
+
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label)
         {
             fontSize = 12,
             alignment = TextAnchor.MiddleCenter
         };
         infoStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
+
         GUI.Label(new Rect(x, y + height - 30f, width, 20f), "Press M to close", infoStyle);
+
         GUI.backgroundColor = Color.white;
     }
 

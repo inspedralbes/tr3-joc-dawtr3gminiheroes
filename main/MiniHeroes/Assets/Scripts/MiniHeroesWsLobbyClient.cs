@@ -184,6 +184,7 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
             if (welcome != null)
             {
                 clientId = welcome.clientId ?? string.Empty;
+                Debug.Log($"WELCOME -> CLIENT ID ASSIGNED: {welcome.clientId}");
                 if (!string.IsNullOrEmpty(welcome.roomId))
                 {
                     roomId = welcome.roomId;
