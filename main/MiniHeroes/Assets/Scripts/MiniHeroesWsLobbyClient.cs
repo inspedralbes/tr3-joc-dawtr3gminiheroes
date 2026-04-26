@@ -85,10 +85,22 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
     private string clientId = string.Empty;
     private string hostId = string.Empty;
     private string lastError = string.Empty;
+    private bool manualDisconnect;
+    private float reconnectAt = -1f;
+    private int reconnectAttempts;
+    private const int MaxReconnectAttempts = 8;
+    private const float ReconnectDelaySeconds = 1.5f;
 
     private void Update()
     {
         ws?.Pump();
+
+        if (ws == null && !manualDisconnect && reconnectAttempts < MaxReconnectAttempts && reconnectAt > 0f && Time.unscaledTime >= reconnectAt)
+        {
+            reconnectAt = -1f;
+            reconnectAttempts++;
+            ConnectInternal();
+        }
     }
 
     public void Connect(string url, string roomId, string username, int level, int experience, int gruntsKilled)
@@ -106,7 +118,15 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
         clientId = string.Empty;
         hostId = string.Empty;
         players.Clear();
+        manualDisconnect = false;
+        reconnectAttempts = 0;
+        reconnectAt = -1f;
 
+        ConnectInternal();
+    }
+
+    private void ConnectInternal()
+    {
         ws = new MiniHeroesWebSocketClient();
         ws.Opened += OnWsOpened;
         ws.MessageReceived += OnWsMessage;
@@ -117,6 +137,10 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     public void Disconnect()
     {
+        manualDisconnect = true;
+        reconnectAt = -1f;
+        reconnectAttempts = 0;
+
         if (ws != null)
         {
             ws.Opened -= OnWsOpened;
@@ -158,6 +182,9 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     private void OnWsOpened()
     {
+        reconnectAttempts = 0;
+        reconnectAt = -1f;
+
         JoinMessage join = new JoinMessage
         {
             type = "join",
@@ -240,8 +267,23 @@ public class MiniHeroesWsLobbyClient : MonoBehaviour
 
     private void OnWsClosed(int code)
     {
-        lastError = "Unable to connect to the remote server";
+        if (ws != null)
+        {
+            ws.Opened -= OnWsOpened;
+            ws.MessageReceived -= OnWsMessage;
+            ws.Error -= OnWsError;
+            ws.Closed -= OnWsClosed;
+            ws = null;
+        }
+
+        if (manualDisconnect)
+        {
+            return;
+        }
+
+        lastError = "Connection lost. Reconnecting...";
         Error?.Invoke(lastError);
+        reconnectAt = Time.unscaledTime + ReconnectDelaySeconds;
     }
 
     private static string ExtractType(string json)

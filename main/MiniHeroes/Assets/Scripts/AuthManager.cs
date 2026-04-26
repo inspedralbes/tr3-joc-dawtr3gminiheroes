@@ -39,7 +39,7 @@ public class AuthManager : MonoBehaviour
     public string soloSceneName = "SampleScene";
 
     [Header("Multiplayer (WebSocket)")]
-    public string websocketUrl = "wss://backend-miniheroes.onrender.com/ws";
+    public string websocketUrl = "wss://backend-miniheroes.onrender.com";
 
     [Tooltip("Scene loaded when starting a multiplayer match.")]
     public string multiplayerSceneName = "SampleScene";

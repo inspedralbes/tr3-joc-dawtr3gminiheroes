@@ -10,6 +10,7 @@ const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const SECRET_KEY = process.env.JWT_SECRET || 'miniheroes_super_secret_key';
 const MAX_PLAYERS_PER_ROOM = 2;
+const HEARTBEAT_INTERVAL_MS = 25000;
 
 app.use(cors({ origin: true }));
 app.use(express.json());
@@ -179,7 +180,7 @@ function createClientId() {
 }
 
 function safeSend(ws, payload) {
-    if (!ws || ws.readyState !== ws.OPEN) {
+    if (!ws || ws.readyState !== 1) {
         return;
     }
 
@@ -456,7 +457,7 @@ server.on('upgrade', (request, socket, head) => {
     const host = request.headers.host || 'localhost';
     const url = new URL(request.url || '/', `http://${host}`);
 
-    if (url.pathname !== '/ws') {
+    if (url.pathname !== '/ws' && url.pathname !== '/') {
         socket.destroy();
         return;
     }
@@ -535,6 +536,22 @@ wss.on('connection', (ws) => {
     ws.on('error', () => {
         removeClientFromRoom(clientCtx, true);
     });
+});
+
+const heartbeat = setInterval(() => {
+    for (const client of wss.clients) {
+        if (client.readyState === 1) {
+            try {
+                client.ping();
+            } catch (_error) {
+                // Ignore.
+            }
+        }
+    }
+}, HEARTBEAT_INTERVAL_MS);
+
+wss.on('close', () => {
+    clearInterval(heartbeat);
 });
 
 server.listen(PORT, () => {
