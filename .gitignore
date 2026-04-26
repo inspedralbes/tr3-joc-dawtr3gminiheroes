@@ -1,0 +1,46 @@
+# ========== UNITY GENERATED ==========
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+
+# ========== UNITY CACHE ==========
+MemoryCaptures/
+
+# ========== IDE ==========
+.vs/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+
+# ========== OS FILES ==========
+.DS_Store
+Thumbs.db
+
+# ========== BUILD FILES ==========
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+*.ipa
+
+# ========== OPTIONAL ==========
+# Uncomment si usas Addressables builds locales
+# ServerData/
+
+# ========== CRASH REPORTS ==========
+sysinfo.txt
+
+node_modules/
+.env
